@@ -8,8 +8,10 @@
 | [NatsumeAi/CMP-90HX-Compute-PCIE2.0-unlock](https://github.com/NatsumeAi/CMP-90HX-Compute-PCIE2.0-unlock) | `.07` VBIOS measurements and pointers |
 | NVIDIA | Open GPU kernel modules 610.43.03 |
 
-## What is new here
+## What this repo adds
 
+* **Packaging**: one installer that builds compute unlock + PCIe Gen2 into the
+  same patched module and verifies both (`scripts/verify.sh`).
 * **Minimal mask set**: 2 of 34 masks are sufficient for PCIe Gen2
   (`docs/FINDINGS.md`).
 * **`patches/0017-cmp90hx-gen2-retrain-retry.patch`**: multi-round in-kernel

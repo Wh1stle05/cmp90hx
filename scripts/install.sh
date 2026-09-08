@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Build + install the patched NVIDIA open 610.43.03 module and the boot service.
+# Build + install the patched NVIDIA open 610.43.03 module (compute + PCIe
+# Gen2 unlock) and the boot service.
 #
 # Upstream pieces are fetched at install time (not vendored):
 #   - pearlfortune/cmpunlocker v0.1.28 90HX stockflow bundle (MIT): patches 0014/0015
@@ -110,7 +111,14 @@ mkdir -p "$PREFIX"
 install -m0755 "$REPO/scripts/cmp90hx-gen2-minimal.sh" "$PREFIX/"
 install -m0755 "$REPO/scripts/rejoin16-cycle.sh" "$PREFIX/"
 install -m0644 "$REPO/scripts/maskread.py" "$PREFIX/"
+install -m0644 "$REPO/tools/bench.cu" "$PREFIX/"
 gcc -O2 -o "$PREFIX/bar0poke" "$REPO/tools/bar0poke.c"
+if command -v nvcc >/dev/null 2>&1; then
+    nvcc -O2 -arch=sm_86 "$REPO/tools/bench.cu" -lcublas -o "$PREFIX/bench" 2>/dev/null \
+        && info "bench binary installed" || info "WARNING: bench build failed (nvcc/cuBLAS missing?)"
+else
+    info "WARNING: nvcc not found; bench binary not built (verify.sh --bench will try to build it)"
+fi
 
 # 7. systemd unit
 info "installing systemd unit"

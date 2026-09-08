@@ -1,5 +1,9 @@
 # Measurements
 
+Everything below is from the same machine, after a single `install.sh`
+(compute unlock is applied automatically at module load; PCIe Gen2 via the
+boot service).
+
 Host: Jingyue X99 Titanium D3, Ubuntu 24.04, kernel `6.8.0-139-generic`,
 NVIDIA open `610.43.03`, 2x CMP 90HX (`10de:220d` / `1555`, VBIOS
 `94.02.74.00.01`), 250 W power cap.

@@ -1,5 +1,5 @@
 [Unit]
-Description=CMP 90HX PCIe Gen2 unlock (minimal 2-mask, auto BDF)
+Description=CMP 90HX PCIe Gen2 unlock (minimal 2-mask, auto BDF) - compute unlock is automatic at module load
 After=multi-user.target
 # If you auto-start a miner / GPU workload, order it After= this unit.
 

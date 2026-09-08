@@ -1,75 +1,86 @@
-# CMP 90HX PCIe Gen2 unlock — minimal 2-mask apply
+# CMP 90HX full unlock — compute + PCIe Gen2
 
-Unlocks **PCIe Gen 2 (5.0 GT/s)** on NVIDIA CMP 90HX mining cards
-(`10de:220d` / subsystem `10de:1555`, VBIOS `94.02.74.00.01`/`.05`) running the
-NVIDIA **Open** kernel modules `610.43.03`, on top of the pearlfortune compute
-unlock.
+One repo for unlocking NVIDIA **CMP 90HX** mining cards
+(`10de:220d` / subsystem `10de:1555`, VBIOS `94.02.74.00.01`/`.05`) on Linux
+with the NVIDIA **open** kernel modules `610.43.03`:
 
-This repo reduces the PCIe part from the published **34-mask** apply to
-**2 masks per card**, and fixes a retrain race that prevented the link from
-coming up at Gen2 on some boards.
-
-* No VBIOS flashing, no OTP/fuse writes. Runtime register writes only.
-* Compute unlock (full SM issue rate) is preserved — verified after every step.
-
-## Results (measured, Ubuntu 24.04, kernel 6.8.0-139-generic, 250 W cap)
-
-| | before (locked) | after |
+| Feature | Locked | Unlocked |
 | --- | --- | --- |
-| GPU0 `03:00.0` | Gen1 x16, 3.08 GB/s H2D | **Gen2 x16, 6.29 GB/s H2D / 6.70 GB/s D2H** |
-| GPU1 `05:00.0` | Gen1 x8, 1.59 GB/s H2D | **Gen2 x8, 3.18 GB/s H2D / 3.35 GB/s D2H** |
-| compute (both) | full | full (`PASS_CMP90HX_ALL_TARGETS_FULL_SPEED`) |
+| **SM compute** (FP32) | 0.72 TFLOPS | **18.24 TFLOPS** (full issue rate) |
+| Mixed precision | — | TF32 40.6 / FP16 77.7 / BF16 60.5 TFLOPS, INT8 45.2 TOPS |
+| **PCIe** | Gen1 x16 / x8, 3.08 / 1.59 GB/s H2D | **Gen2 x16 / x8, 6.29 / 3.18 GB/s H2D** |
+| Memory | 10 GB GDDR6X, 9501 MHz | unchanged |
 
-`nvidia-smi --query-gpu=pcie.link.gen.current` reports `2` after the apply.
+No VBIOS flashing, no OTP/fuse writes — runtime register writes and a patched
+kernel module only.
 
-## The 2 masks
+## How it works
 
-| address | name | why |
-| --- | --- | --- |
-| `0x00823800` | `FEAT_OVR_ECC_PLM` | gate checked by the patched module before it writes the Gen2 speed path |
-| `0x00088fe8` | XVE privilege mask | unprotects `PRIV_MISC_1` / `LTSSM` speed-path registers |
+```
+NVIDIA open kernel module source 610.43.03
+  + pearlfortune 0014/0015   -> compute unlock (V67 chain opens FEAT/SS0/SS1 each boot)
+  + jdowning100 0016         -> PCIe Gen2 speed-path writes in kernel
+  + this repo 0017           -> multi-round link retrain (fixes Gen1 fallback)
+        |
+        v
+patched nvidia*.ko installed to /usr/lib/modules/$(uname -r)/updates/...
+        |
+        +-- compute: applied automatically on every module load (both cards)
+        +-- PCIe Gen2: boot service opens 2 privilege masks per card, then
+            the module retrains the link (see docs/PCIE-GEN2-FINDINGS.md)
+```
 
-The remaining 32 masks from the original rejoin16 table (XP3G x17, OPTB x10,
-XVE x5) are **not** needed for Gen2. See `docs/FINDINGS.md` for the bisection.
-
-## Requirements
-
-* CMP 90HX, `10de:220d`, subsystem `10de:1555`
-* NVIDIA **open** kernel modules `610.43.03` installed and the pearlfortune
-  compute unlock working (`cmpunlocker-rs compute90hx-v67 verify --expect full`)
-* matching kernel headers, `make`, `gcc`, `patch`, `setpci`, `python3`
-* Secure Boot **off** (patched modules are unsigned)
+* **Compute** needs no per-boot action: the V67 chain fires on the first driver
+  load of every boot and reopens the issue-rate selectors (`SS0=0x88888888`,
+  `SS1=0x8`).
+* **PCIe Gen2** needs 2 mask writes per card (max 2 driver reloads/card).
+  Masks survive warm reboots sometimes, never a real power cycle, so a boot
+  service re-checks and applies only what is missing: seconds on warm reboot,
+  ~1–3 minutes after a cold boot.
 
 ## Install
 
 ```sh
-sudo ./scripts/install.sh
+sudo ./scripts/install.sh      # downloads upstream, builds, installs, enables service
 sudo systemctl start cmp90hx-gen2.service   # or reboot
+./scripts/verify.sh            # compute + PCIe checks (run as root)
 ```
 
-`install.sh` builds the patched `nvidia*.ko` for the running kernel and
-installs it to `/usr/lib/modules/$(uname -r)/updates/cmpunlocker-90hx-stockflow`
-(depmod override), then installs the boot service.
+`install.sh` fetches the upstream pieces at install time (not vendored):
 
-## How it runs
+* pearlfortune/cmpunlocker v0.1.28 90HX stockflow (MIT) — patches `0014`/`0015`
+* jdowning100/cmpunlocker rejoin16 patch `0016` (GPL-2.0, pinned commit)
+* NVIDIA open kernel module source `610.43.03`
 
-* **Every boot** the service checks both cards. If the 2 masks are already
-  open (masks sometimes survive a warm reboot) it only retrains the link and
-  finishes in seconds.
-* If the masks are locked (always after a real power cycle), it runs one
-  driver-reload cycle per closed mask (max 2 per card, ~20 s each), then the
-  patched module retrains the link in kernel context. **Typical cold-boot
-  recovery: ~1–3 minutes total for two cards.**
-* BDFs are auto-detected every run — on this board the second card's BDF
-  changes across reboots.
+and applies this repo's `patches/0017-cmp90hx-gen2-retrain-retry.patch`.
 
-## Verify
+## Verify / benchmark
 
 ```sh
-cat /sys/bus/pci/devices/$(lspci -Dnn | awk '/10de:220d/{print $1; exit}')/current_link_speed   # 5.0 GT/s
-nvidia-smi --query-gpu=index,pcie.link.gen.current --format=csv                                   # 2
-sudo ./cmpunlocker-rs compute90hx-v67 verify --all-cmp90hx --expect full                          # PASS
+sudo ./scripts/verify.sh                    # registers + link state
+sudo ./scripts/verify.sh --bench            # also run cuBLAS + copy benchmark
 ```
+
+Expected output:
+
+```
+compute  GPU0 SS0=0x88888888 SS1=0x00000008  OK (full)
+compute  GPU1 SS0=0x88888888 SS1=0x00000008  OK (full)
+pcie     GPU0 5.0 GT/s x16  nvidia-smi gen=2 OK
+pcie     GPU1 5.0 GT/s x8   nvidia-smi gen=2 OK
+```
+
+`tools/bench.cu` (compiled by verify.sh) measures FP32/TF32/FP16/BF16/INT8 GEMM
+throughput and H2D/D2H/on-device bandwidth. Reference numbers in
+`docs/RESULTS.md`.
+
+## Requirements
+
+* CMP 90HX `10de:220d` / `1555`, VBIOS `94.02.74.00.01` or `.05`
+* NVIDIA **open** kernel modules `610.43.03` installed (runfile; the installer
+  checks `modinfo -F version nvidia`)
+* kernel headers, `make`, `gcc`, `patch`, `setpci`, `python3`
+* Secure Boot **off** (patched modules are unsigned)
 
 ## Uninstall
 
@@ -79,25 +90,16 @@ sudo ./scripts/uninstall.sh   # then reboot
 
 ## Caveats
 
-* After a kernel or driver change you must re-run `install.sh` (module rebuilt
-  for the new kernel).
-* Do not run the apply while workloads are using the GPUs — it reloads the
-  driver several times.
-* The unlock is runtime state, not persistent firmware; the boot service is
-  what makes it survive reboots.
+* Bound to driver **610.43.03 open**. A different driver version needs the
+  patches rebased and the 2-mask set re-verified.
+* After a **kernel upgrade**, DKMS rebuilds the stock module but not the
+  patched one — re-run `install.sh`, otherwise the card falls back to the
+  locked stock module (0.72 TFLOPS + Gen1).
+* Do not run the apply while the GPUs are busy (it reloads the driver).
+* Out of scope: CMP 170HX (GA100), 50HX, 30HX/40HX/70HX, VBIOS `.07`
+  (different unlock path), proprietary module flavour.
 
-## Credits
+## Credits & license
 
-* [pearlfortune/cmpunlocker](https://github.com/pearlfortune/cmpunlocker) —
-  90HX stockflow compute unlock (rejoin14/rejoin15) that this builds on.
-* [jdowning100/cmpunlocker](https://github.com/jdowning100/cmpunlocker) —
-  rejoin16 PCIe Gen2 patch (`90hx/0016-...pcie-jtag-plm.patch`), `bar0poke.c`,
-  and the 34-mask table used as the starting point.
-* [studebaker8/cmp170hx-gen2](https://github.com/studebaker8/cmp170hx-gen2) —
-  Retrain-Link approach.
-* NVIDIA — open GPU kernel modules 610.43.03.
-
-## License
-
-GPL-2.0 (see `LICENSE`), because this work derives from and patches
-GPL-2.0 code (jdowning100/cmpunlocker).
+See `CREDITS.md`. GPL-2.0 (`LICENSE`) — this work patches GPL-2.0 code
+(jdowning100/cmpunlocker).
