@@ -1,0 +1,5 @@
+# Minimal mask set for CMP 90HX PCIe Gen2 (per card).
+# 0x00823800  FEAT_OVR_ECC_PLM   - module Gen2-config gate
+# 0x00088fe8  XVE privilege mask - PRIV_MISC_1 / LTSSM speed-path gate
+0x00823800 0xffffffff
+0x00088fe8 0xffffffff

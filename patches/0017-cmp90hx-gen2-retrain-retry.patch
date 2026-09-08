@@ -1,0 +1,57 @@
+--- a/kernel-open/nvidia/nv.c	2026-09-08 10:14:42.042748694 +0000
++++ b/kernel-open/nvidia/nv.c	2026-09-08 10:14:42.045748610 +0000
+@@ -148,30 +148,34 @@
+     ret = pcie_capability_write_word(upstream, PCI_EXP_LNKCTL2, upstream_ctl2);
+     if (ret)
+         goto capability_error;
+-    ret = pcie_capability_read_word(upstream, PCI_EXP_LNKCTL, &upstream_ctl);
+-    if (ret)
+-        goto capability_error;
+-    ret = pcie_capability_write_word(upstream, PCI_EXP_LNKCTL,
+-                                     upstream_ctl | PCI_EXP_LNKCTL_RL);
+-    if (ret)
+-        goto capability_error;
+-
+-    for (attempt = 0; attempt < 20; attempt++)
++    for (attempt = 0; attempt < 5; attempt++)
+     {
+-        msleep(100);
+-        ret = pcie_capability_read_word(gpu, PCI_EXP_LNKSTA, &link_status);
+-        if (!ret &&
+-            ((link_status & PCI_EXP_LNKSTA_CLS) >= PCI_EXP_LNKSTA_CLS_5_0GB))
++        int rl_try;
++
++        ret = pcie_capability_read_word(upstream, PCI_EXP_LNKCTL, &upstream_ctl);
++        if (ret)
++            goto capability_error;
++        ret = pcie_capability_write_word(upstream, PCI_EXP_LNKCTL,
++                                         upstream_ctl | PCI_EXP_LNKCTL_RL);
++        if (ret)
++            goto capability_error;
++
++        for (rl_try = 0; rl_try < 40; rl_try++)
+         {
+-            NV_DEV_PRINTF(NV_DBG_INFO, nv, "CMP90 Gen2: PCIe link trained to Gen%u\n",
+-                          link_status & PCI_EXP_LNKSTA_CLS);
+-            return;
++            msleep(100);
++            ret = pcie_capability_read_word(gpu, PCI_EXP_LNKSTA, &link_status);
++            if (!ret &&
++                ((link_status & PCI_EXP_LNKSTA_CLS) >= PCI_EXP_LNKSTA_CLS_5_0GB))
++            {
++                NV_DEV_PRINTF(NV_DBG_INFO, nv, "CMP90 Gen2: PCIe link trained to Gen%u\n",
++                              link_status & PCI_EXP_LNKSTA_CLS);
++                return;
++            }
+         }
++        NV_DEV_PRINTF(NV_DBG_INFO, nv,
++                      "CMP90 Gen2: retrain round %d still Gen1 (status=0x%04x), re-toggling RL\n",
++                      attempt, link_status);
+     }
+-
+-    NV_DEV_PRINTF(NV_DBG_ERRORS, nv,
+-                  "CMP90 Gen2: retrain completed without Gen2 link (status=0x%04x)\n",
+-                  link_status);
+     return;
+ capability_error:
+     NV_DEV_PRINTF(NV_DBG_ERRORS, nv,

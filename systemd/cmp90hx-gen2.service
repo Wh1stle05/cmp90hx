@@ -1,0 +1,14 @@
+[Unit]
+Description=CMP 90HX PCIe Gen2 unlock (minimal 2-mask, auto BDF)
+After=multi-user.target
+# If you auto-start a miner / GPU workload, order it After= this unit.
+
+[Service]
+Type=oneshot
+ExecStartPre=/bin/rm -f /var/lib/cmpunlocker-rs/rejoin16-next-write.bin
+ExecStart=/opt/cmp90hx-gen2/cmp90hx-gen2-minimal.sh
+TimeoutStartSec=900
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
