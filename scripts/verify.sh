@@ -42,7 +42,8 @@ for bdf in "${BDFS[@]}"; do
     spd="$(cat "/sys/bus/pci/devices/${bdf}/current_link_speed" 2>/dev/null)"
     wid="$(cat "/sys/bus/pci/devices/${bdf}/current_link_width" 2>/dev/null)"
     gen="$(nvidia-smi --query-gpu=pcie.link.gen.current,pci.bus_id --format=csv,noheader,nounits 2>/dev/null \
-           | awk -v b="${bdf#0000:}" '$2 ~ b {print $1; exit}')"
+           | awk -F', *' -v b="${bdf#0000:}" '$2 ~ b {print $1; exit}')"
+    gen="${gen%,}"
     if [[ "$spd" == 5.0* && "$gen" == "2" ]]; then
         printf 'pcie     %-14s %s x%s  nvidia-smi gen=%s OK\n' "$bdf" "$spd" "$wid" "$gen"
     else
