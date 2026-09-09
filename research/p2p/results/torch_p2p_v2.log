@@ -1,0 +1,54 @@
+torch 2.14.0+cu130 cuda 13.0
+============================================================
+1) 单进程 P2P torch.Tensor.to() vs cudaMemcpyPeer
+============================================================
+canAccessPeer 0->1: False
+  P2P 0->1    4.0KB bw=0.03 GB/s  155.4us
+  P2P 0->1   64.0KB bw=1.23 GB/s  53.4us
+  P2P 0->1    1.0MB bw=2.06 GB/s  509.7us
+  P2P 0->1   16.0MB bw=2.09 GB/s  8043.4us
+  P2P 0->1   64.0MB bw=2.09 GB/s  32138.7us
+  P2P 0->1  256.0MB bw=2.09 GB/s  128673.9us
+  H2D GPU0 bw=6.21 GB/s
+  D2H GPU0 bw=6.63 GB/s
+  H2D GPU1 bw=3.16 GB/s
+  D2H GPU1 bw=3.33 GB/s
+
+============================================================
+2) 分布式 nccl
+============================================================
+[rank0]:[W908 14:20:49.023409771 ProcessGroupNCCL.cpp:4164] Warning: [PG ID 0 PG GUID 0(default_pg) Rank 0] An unbatched P2P op (send/recv) was called on this ProcessGroup with size 2.  In eager initialization mode, unbatched P2P ops are treated as independent collective ops, and are thus serialized with all other ops on this ProcessGroup, including other P2P ops. To avoid serialization, either create additional independent ProcessGroups for the P2P ops or use batched P2P ops. You can squash this warning by setting the environment variable TORCH_NCCL_SHOW_EAGER_INIT_P2P_SERIALIZATION_WARNING to false. (function operator())
+[rank1]:[W908 14:20:49.023413054 ProcessGroupNCCL.cpp:4164] Warning: [PG ID 0 PG GUID 0(default_pg) Rank 1] An unbatched P2P op (send/recv) was called on this ProcessGroup with size 2.  In eager initialization mode, unbatched P2P ops are treated as independent collective ops, and are thus serialized with all other ops on this ProcessGroup, including other P2P ops. To avoid serialization, either create additional independent ProcessGroups for the P2P ops or use batched P2P ops. You can squash this warning by setting the environment variable TORCH_NCCL_SHOW_EAGER_INIT_P2P_SERIALIZATION_WARNING to false. (function operator())
+
+[nccl] world_size=2
+  all_reduce   32.0KB algbw=0.28 busbw=0.28 GB/s
+  all_reduce    1.0MB algbw=1.87 busbw=1.87 GB/s
+  all_reduce   16.0MB algbw=2.02 busbw=2.02 GB/s
+  all_reduce   64.0MB algbw=2.04 busbw=2.04 GB/s
+  all_gather   32.0KB algbw=0.51 GB/s
+  all_gather    1.0MB algbw=3.13 GB/s
+  all_gather   16.0MB algbw=3.23 GB/s
+  all_gather   64.0MB algbw=3.28 GB/s
+  broadcast     1.0MB algbw=3.55 GB/s
+  broadcast    16.0MB algbw=3.17 GB/s
+  send 0->1    1.0MB bw=0.92 GB/s
+  send 0->1   16.0MB bw=3.18 GB/s
+  send 0->1   64.0MB bw=3.18 GB/s
+[nccl] PASS
+
+============================================================
+2) 分布式 gloo
+============================================================
+
+[gloo] world_size=2
+  all_reduce   32.0KB algbw=0.08 busbw=0.08 GB/s
+  all_reduce    1.0MB algbw=0.60 busbw=0.60 GB/s
+  all_reduce   16.0MB algbw=0.69 busbw=0.69 GB/s
+  all_reduce   64.0MB algbw=0.71 busbw=0.71 GB/s
+  all_gather   32.0KB algbw=0.10 GB/s
+  all_gather    1.0MB algbw=0.57 GB/s
+  all_gather   16.0MB algbw=0.45 GB/s
+  all_gather   64.0MB algbw=0.53 GB/s
+  broadcast     1.0MB algbw=0.92 GB/s
+  broadcast    16.0MB algbw=1.23 GB/s
+[gloo] PASS

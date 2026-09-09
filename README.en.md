@@ -16,6 +16,19 @@ with the NVIDIA **open** kernel modules `610.43.03`:
 No VBIOS flashing, no OTP/fuse writes — runtime register writes and a patched
 kernel module only.
 
+## Repo layout
+
+```
+scripts/ systemd/ tools/ patches/ masks/   unlock toolchain (compute + PCIe Gen2)
+docs/                                      unlock internals, benchmarks, Gen2 notes
+research/                                  single-GPU measurements: AI inference,
+                                           text-to-image, stress test
+    p2p/        dual-GPU P2P/NCCL history (TP impractical, see README)
+    vllm/       vLLM 0.28 + Qwen3.5-4B-AWQ prefill/decode report
+    comfyui/    ComfyUI 0.35 + SDXL text-to-image deploy & first run
+    pstress.sh  stress-test script
+```
+
 ## How it works
 
 ```

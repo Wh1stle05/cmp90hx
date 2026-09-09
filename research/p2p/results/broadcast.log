@@ -1,0 +1,18 @@
+# nccl-tests version 2.20.0 (b4d5bee) nccl-headers=21803 nccl-library=21803
+# Collective test starting: broadcast_perf
+# nThread 1 nGpus 2 minBytes 8 maxBytes 268435456 step: 2(factor) warmup iters: 1 iters: 20 agg iters: 1 validation: 1 graph: 0 unalign: 0
+#
+# Using devices
+#  Rank  0 Group  0 Pid   4773 on    ubuntu1 device  0 [0000:03:00] NVIDIA CMP 90HX
+#  Rank  1 Group  0 Pid   4773 on    ubuntu1 device  1 [0000:04:00] NVIDIA CMP 90HX
+#
+#                                                              out-of-place                       in-place
+#       size         count      type   redop    root     time   algbw   busbw  #wrong     time   algbw   busbw  #wrong
+#        (B)    (elements)                               (us)  (GB/s)  (GB/s)             (us)  (GB/s)  (GB/s)        
+           8             2     float    none       0ubuntu1: Test CUDA failure broadcast.cu:25 'invalid argument'
+ .. ubuntu1 pid 4773: Test failure common.cu:724
+ .. ubuntu1 pid 4773: Test failure common.cu:958
+ .. ubuntu1 pid 4773: Test failure broadcast.cu:139
+ .. ubuntu1 pid 4773: Test failure common.cu:991
+ .. ubuntu1 pid 4773: Test failure common.cu:1870
+ .. ubuntu1 pid 4773: Test failure common.cu:1545

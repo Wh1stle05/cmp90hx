@@ -1,0 +1,29 @@
+loading...
+(EngineCore pid=3098) Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+(EngineCore pid=3098) Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:01<00:00,  1.24s/it]
+(EngineCore pid=3098) Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:01<00:00,  1.25s/it]
+(EngineCore pid=3098) 
+loaded in 24.4s
+prefill plen=  128 wall=0.088s ttft=None rate=1456.3 tok/s
+prefill plen=  512 wall=0.091s ttft=None rate=5642.8 tok/s
+prefill plen= 2048 wall=0.299s ttft=None rate=6857.0 tok/s
+prefill plen= 4096 wall=0.602s ttft=None rate=6798.4 tok/s
+prefill plen= 8000 wall=1.212s ttft=None rate=6598.4 tok/s
+decode out=128 wall=7.28s tpot=56.60ms tok/s=17.7
+decode out=512 wall=28.96s tpot=56.50ms tok/s=17.7
+sample wall=14.57s out_len=256
+
+
+<think>
+Thinking Process:
+
+1.  **Analyze the Request:**
+    *   Topic: Machine Learning.
+    *   Constraint: Explain in *one paragraph*.
+    *   Goal: Provide a clear, concise, and accurate definition/explanation.
+
+2.  **Identify Key Concepts of Machine Learning:**
+    *   What is it? A subset of artificial intelligence (AI).
+    *   How does it work? Algorithms learn from data (patterns).
+    *   What is the outcome? Making predictions or decisions without being explicitly programmed for ever
+saved results.json

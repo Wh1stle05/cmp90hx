@@ -1,0 +1,96 @@
+torch 2.14.0+cu130 cuda 13.0 devices 2
+canAccessPeer 0->1: False
+============================================================
+1) 单进程 P2P cudaMemcpyPeer via torch.Tensor.to()
+============================================================
+devices=2 ['NVIDIA CMP 90HX', 'NVIDIA CMP 90HX']
+  P2P 0->1 256.0MB reps=20 bw=2.09 GB/s
+
+  P2P 0->1 detailed sizes:
+       4.0KB reps=1000 bw=0.15 GB/s  time=27.6 us
+      64.0KB reps=1000 bw=1.29 GB/s  time=50.9 us
+       1.0MB reps= 100 bw=2.06 GB/s  time=509.8 us
+      16.0MB reps=  20 bw=2.09 GB/s  time=8037.9 us
+      64.0MB reps=  20 bw=2.09 GB/s  time=32131.1 us
+     256.0MB reps=  20 bw=2.09 GB/s  time=128657.6 us
+
+  H2D / D2H via torch:
+    H2D GPU0 1.0GB bw=6.21 GB/s
+    D2H GPU0 1.0GB bw=6.63 GB/s
+    H2D GPU1 1.0GB bw=3.16 GB/s
+    D2H GPU1 1.0GB bw=3.33 GB/s
+
+============================================================
+2) 分布式 gloo world_size=2
+============================================================
+terminate called after throwing an instance of 'gloo::IoException'
+  what():  [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/pair.cc:339] writev [127.0.0.1]:36543: Bad address
+W0908 14:19:22.500000 12442 venv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py:165] Terminating process 12660 via signal SIGTERM
+W0908 14:19:52.531000 12442 venv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py:176] Unable to shutdown process 12660 via SIGTERM , forcefully exiting via SIGKILL
+Traceback (most recent call last):
+  File "/home/a3165/dual-90hx-research/torch_p2p_test.py", line 173, in <module>
+    mp.spawn(test_distributed, args=(2, backend, []), nprocs=2, join=True)
+  File "/home/a3165/dual-90hx-research/venv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 340, in spawn
+    return start_processes(fn, args, nprocs, join, daemon, start_method="spawn")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/a3165/dual-90hx-research/venv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 296, in start_processes
+    while not context.join():
+              ^^^^^^^^^^^^^^
+  File "/home/a3165/dual-90hx-research/venv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 211, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 1 terminated with the following error:
+Traceback (most recent call last):
+  File "/home/a3165/dual-90hx-research/venv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 87, in _wrap
+    fn(i, *args)
+  File "/home/a3165/dual-90hx-research/torch_p2p_test.py", line 157, in test_distributed
+    for _ in range(3): dist.recv(t, src=0); torch.cuda.synchronize()
+                       ^^^^^^^^^^^^^^^^^^^
+  File "/home/a3165/dual-90hx-research/venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py", line 83, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/a3165/dual-90hx-research/venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py", line 3433, in recv
+    work.wait()
+RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/pair.cc:561] Connection closed by peer [127.0.1.1]:55710. This is typically caused by a remote worker crashing. Check the logs of the remote worker before reporting an error. GLHF! 🏖️
+
+[gloo] FAIL: 
+
+-- Process 1 terminated with the following error:
+Traceback (most recent call last):
+  File "/home/a3165/dual-90hx-research/venv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 87, in _wrap
+    fn(i, *args)
+  File "/home/a3165/dual-90hx-research/torch_p2p_test.py", line 157, in test_distributed
+    for _ in range(3): dist.recv(t, src=0); torch.cuda.synchronize()
+                       ^^^^^^^^^^^^^^^^^^^
+  File "/home/a3165/dual-90hx-research/venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py", line 83, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/a3165/dual-90hx-research/venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py", line 3433, in recv
+    work.wait()
+RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/pair.cc:561] Connection closed by peer [127.0.1.1]:55710. This is typically caused by a remote worker crashing. Check the logs of the remote worker before reporting an error. GLHF! 🏖️
+
+
+============================================================
+2) 分布式 nccl world_size=2
+============================================================
+[rank0]:[W908 14:19:57.563630863 ProcessGroupNCCL.cpp:4207] Warning: An unbatched P2P op (send/recv) was called on this ProcessGroup with size 2.  In lazy initialization mode, this will result in a new 2-rank NCCL communicator to be created. (function operator())
+[rank1]:[W908 14:19:57.566114516 ProcessGroupNCCL.cpp:4207] Warning: An unbatched P2P op (send/recv) was called on this ProcessGroup with size 2.  In lazy initialization mode, this will result in a new 2-rank NCCL communicator to be created. (function operator())
+/home/a3165/dual-90hx-research/venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py:83: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+  return func(*args, **kwargs)
+
+[nccl] rank 0/2 testing...
+  [nccl] all_reduce   32.0KB algbw=0.29 GB/s busbw=0.29 GB/s time=113.4 us
+  [nccl] all_reduce    1.0MB algbw=1.88 GB/s busbw=1.88 GB/s time=559.0 us
+  [nccl] all_reduce   16.0MB algbw=2.02 GB/s busbw=2.02 GB/s time=8320.3 us
+  [nccl] all_reduce   64.0MB algbw=2.04 GB/s busbw=2.04 GB/s time=32891.8 us
+  [nccl] all_gather   32.0KB algbw=0.51 GB/s time=127.9 us
+  [nccl] all_gather    1.0MB algbw=3.13 GB/s time=669.2 us
+  [nccl] all_gather   16.0MB algbw=3.23 GB/s time=10375.3 us
+  [nccl] all_gather   64.0MB algbw=3.27 GB/s time=41047.5 us
+  [nccl] broadcast     1.0MB algbw=3.53 GB/s
+  [nccl] broadcast    16.0MB algbw=3.17 GB/s
+  [nccl] send 0->1    1.0MB bw=2.80 GB/s
+  [nccl] send 0->1   16.0MB bw=3.17 GB/s
+  [nccl] send 0->1   64.0MB bw=3.18 GB/s
+[nccl] PASS

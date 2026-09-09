@@ -1,10 +1,11 @@
 中文 | [English](README.en.md)
 
-# CMP 90HX 全解锁总仓库 —— 算力 + PCIe Gen2
+# CMP 90HX 全解锁总仓库 —— 算力 + PCIe Gen2 + 单卡实测
 
 一个仓库搞定 NVIDIA **CMP 90HX** 矿卡（`10de:220d` / 子系统 `10de:1555`，
 VBIOS `94.02.74.00.01`/`.05`）在 Linux + NVIDIA **open** 内核模块
-`610.43.03` 下的全部解锁：
+`610.43.03` 下的全部解锁，以及解锁后的实测数据与可用工作负载
+（AI 推理 / 文生图 / 压力测试）。
 
 | 项目 | 锁定状态 | 解锁后 |
 | --- | --- | --- |
@@ -14,6 +15,18 @@ VBIOS `94.02.74.00.01`/`.05`）在 Linux + NVIDIA **open** 内核模块
 | 显存 | 10GB GDDR6X，9501MHz | 不变 |
 
 不刷 VBIOS、不写 OTP/熔丝——只有运行时寄存器写入 + 打补丁的内核模块。
+
+## 仓库结构
+
+```
+├── scripts/ systemd/ tools/ patches/ masks/   解锁工具链（算力 + PCIe Gen2）
+├── docs/                                      解锁原理、基准、Gen2 找坑记录
+└── research/                                  单卡实测：AI 推理 / 文生图 / 压测
+    ├── p2p/        双卡 P2P/NCCL 历史数据（TP 不可行，见 README）
+    ├── vllm/       vLLM 0.28 + Qwen3.5-4B-AWQ prefill/decode 报告
+    ├── comfyui/    ComfyUI 0.35 + SDXL 文生图部署与首测
+    └── pstress.sh  压力测试脚本
+```
 
 ## 原理
 
@@ -26,7 +39,7 @@ NVIDIA open 内核模块源码 610.43.03
         v
 补丁 nvidia*.ko 装入 /usr/lib/modules/$(uname -r)/updates/...
         |
-        +-- 算力：每次模块加载自动生效（两张卡）
+        +-- 算力：每次模块加载自动生效（单/多卡均适用）
         +-- PCIe Gen2：开机服务每卡写 2 个权限掩码，再由模块完成重训
 ```
 
@@ -59,7 +72,7 @@ sudo ./scripts/verify.sh                    # 寄存器 + 链路状态
 sudo ./scripts/verify.sh --bench            # 额外跑 cuBLAS + 拷贝带宽
 ```
 
-预期输出：
+预期输出（当前为单卡，示例为双卡历史）：
 
 ```
 compute  GPU0 SS0=0x88888888 SS1=0x00000008  OK (full)
@@ -69,7 +82,8 @@ pcie     GPU1 5.0 GT/s x8   nvidia-smi gen=2 OK
 ```
 
 `tools/bench.cu`（verify.sh 会自动编译）测 FP32/TF32/FP16/BF16/INT8 GEMM 与
-H2D/D2H/板载带宽，参考数据见 `docs/RESULTS.md`。
+H2D/D2H/板载带宽，参考数据见 `docs/RESULTS.md`；解锁后的实际工作负载
+（vLLM 推理 / ComfyUI 文生图 / 压力测试）见 `research/`。
 
 ## 环境要求
 

@@ -1,0 +1,6 @@
+P2P 0->1     4096 B reps 1000 0.37 GB/s
+P2P 0->1    65536 B reps 1000 1.48 GB/s
+P2P 0->1  1048576 B reps  100 2.08 GB/s
+P2P 0->1 16777216 B reps   20 2.09 GB/s
+P2P 0->1 67108864 B reps   20 2.10 GB/s
+P2P 0->1 268435456 B reps   20 2.11 GB/s

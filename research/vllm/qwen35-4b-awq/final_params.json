@@ -1,0 +1,65 @@
+{
+  "model": "Qwen3.5-4B-AWQ",
+  "gpu": "GPU1 x8",
+  "config": "CUDA Graph on",
+  "prefill": [
+    {
+      "plen": 128,
+      "ttft_s": 0.0477,
+      "tok_s": 2685.0
+    },
+    {
+      "plen": 512,
+      "ttft_s": 0.0754,
+      "tok_s": 6794.0
+    },
+    {
+      "plen": 2048,
+      "ttft_s": 0.2703,
+      "tok_s": 7576.0
+    },
+    {
+      "plen": 4096,
+      "ttft_s": 0.5463,
+      "tok_s": 7497.0
+    },
+    {
+      "plen": 8000,
+      "ttft_s": 1.1014,
+      "tok_s": 7264.0
+    }
+  ],
+  "decode": {
+    "prompt": 128,
+    "out": 512,
+    "wall_s": 3.26,
+    "tpot_ms": 6.29,
+    "tok_s": 158.9
+  },
+  "decode_batch": [
+    {
+      "batch": 2,
+      "wall_s": 0.98,
+      "agg_tok_s": 260.0,
+      "per_req_tok_s": 130.2
+    },
+    {
+      "batch": 4,
+      "wall_s": 1.02,
+      "agg_tok_s": 501.0,
+      "per_req_tok_s": 125.3
+    },
+    {
+      "batch": 8,
+      "wall_s": 1.18,
+      "agg_tok_s": 865.0,
+      "per_req_tok_s": 108.1
+    },
+    {
+      "batch": 16,
+      "wall_s": 1.58,
+      "agg_tok_s": 1295.0,
+      "per_req_tok_s": 81.0
+    }
+  ]
+}

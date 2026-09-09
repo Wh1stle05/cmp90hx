@@ -1,0 +1,60 @@
+# nccl-tests version 2.20.0 (b4d5bee) nccl-headers=21803 nccl-library=21803
+# Collective test starting: all_reduce_perf
+# nThread 1 nGpus 2 minBytes 32768 maxBytes 67108864 step: 2(factor) warmup iters: 1 iters: 20 agg iters: 1 validation: 1 graph: 0 unalign: 0
+#
+# Using devices
+#  Rank  0 Group  0 Pid   5059 on    ubuntu1 device  0 [0000:03:00] NVIDIA CMP 90HX
+#  Rank  1 Group  0 Pid   5059 on    ubuntu1 device  1 [0000:04:00] NVIDIA CMP 90HX
+ubuntu1:5059:5059 [0] NCCL INFO Bootstrap : Using enp7s0:192.168.124.10<0>
+ubuntu1:5059:5059 [0] NCCL INFO NET/Plugin : Plugin load (libnccl-net.so) returned 2 : libnccl-net.so: cannot open shared object file: No such file or directory
+ubuntu1:5059:5059 [0] NCCL INFO NET/Plugin : No plugin found, using internal implementation
+ubuntu1:5059:5059 [0] NCCL INFO cudaDriverVersion 13030
+NCCL version 2.18.3+cuda12.0
+ubuntu1:5059:5081 [0] NCCL INFO NET/IB : No device found.
+ubuntu1:5059:5081 [0] NCCL INFO NET/Socket : Using [0]enp7s0:192.168.124.10<0>
+ubuntu1:5059:5081 [0] NCCL INFO Using network Socket
+ubuntu1:5059:5082 [1] NCCL INFO Using network Socket
+ubuntu1:5059:5082 [1] NCCL INFO comm 0x5c79f64255f0 rank 1 nranks 2 cudaDev 1 nvmlDev 1 busId 4000 commId 0x780bec3074dfc48e - Init START
+ubuntu1:5059:5081 [0] NCCL INFO comm 0x5c79f6415050 rank 0 nranks 2 cudaDev 0 nvmlDev 0 busId 3000 commId 0x780bec3074dfc48e - Init START
+ubuntu1:5059:5082 [1] NCCL INFO NCCL_P2P_LEVEL set by environment to LOC
+ubuntu1:5059:5082 [1] NCCL INFO Setting affinity for GPU 1 to 0fffff
+
+ubuntu1:5059:5082 [1] graph/search.cc:960 NCCL WARN Could not find a path for pattern 4, falling back to simple order
+
+ubuntu1:5059:5082 [1] graph/search.cc:960 NCCL WARN Could not find a path for pattern 1, falling back to simple order
+ubuntu1:5059:5081 [0] NCCL INFO Setting affinity for GPU 0 to 0fffff
+
+ubuntu1:5059:5081 [0] graph/search.cc:960 NCCL WARN Could not find a path for pattern 4, falling back to simple order
+
+ubuntu1:5059:5081 [0] graph/search.cc:960 NCCL WARN Could not find a path for pattern 1, falling back to simple order
+ubuntu1:5059:5082 [1] NCCL INFO Trees [0] -1/-1/-1->1->0 [1] -1/-1/-1->1->0
+ubuntu1:5059:5082 [1] NCCL INFO P2P Chunksize set to 131072
+ubuntu1:5059:5081 [0] NCCL INFO Channel 00/02 :    0   1
+ubuntu1:5059:5081 [0] NCCL INFO Channel 01/02 :    0   1
+ubuntu1:5059:5081 [0] NCCL INFO Trees [0] 1/-1/-1->0->-1 [1] 1/-1/-1->0->-1
+ubuntu1:5059:5081 [0] NCCL INFO P2P Chunksize set to 131072
+ubuntu1:5059:5082 [1] NCCL INFO Channel 00 : 1[1] -> 0[0] via SHM/direct/direct
+ubuntu1:5059:5082 [1] NCCL INFO Channel 01 : 1[1] -> 0[0] via SHM/direct/direct
+ubuntu1:5059:5081 [0] NCCL INFO Channel 00 : 0[0] -> 1[1] via SHM/direct/direct
+ubuntu1:5059:5081 [0] NCCL INFO Channel 01 : 0[0] -> 1[1] via SHM/direct/direct
+ubuntu1:5059:5082 [1] NCCL INFO Connected all rings
+ubuntu1:5059:5082 [1] NCCL INFO Connected all trees
+ubuntu1:5059:5081 [0] NCCL INFO Connected all rings
+ubuntu1:5059:5081 [0] NCCL INFO Connected all trees
+ubuntu1:5059:5082 [1] NCCL INFO threadThresholds 8/8/64 | 16/8/64 | 512 | 512
+ubuntu1:5059:5082 [1] NCCL INFO 2 coll channels, 0 nvls channels, 2 p2p channels, 2 p2p channels per peer
+ubuntu1:5059:5081 [0] NCCL INFO threadThresholds 8/8/64 | 16/8/64 | 512 | 512
+ubuntu1:5059:5081 [0] NCCL INFO 2 coll channels, 0 nvls channels, 2 p2p channels, 2 p2p channels per peer
+ubuntu1:5059:5082 [1] NCCL INFO comm 0x5c79f64255f0 rank 1 nranks 2 cudaDev 1 nvmlDev 1 busId 4000 commId 0x780bec3074dfc48e - Init COMPLETE
+ubuntu1:5059:5081 [0] NCCL INFO comm 0x5c79f6415050 rank 0 nranks 2 cudaDev 0 nvmlDev 0 busId 3000 commId 0x780bec3074dfc48e - Init COMPLETE
+#
+#                                                              out-of-place                       in-place
+#       size         count      type   redop    root     time   algbw   busbw  #wrong     time   algbw   busbw  #wrong
+#        (B)    (elements)                               (us)  (GB/s)  (GB/s)             (us)  (GB/s)  (GB/s)        
+       32768          8192     float     sum      -1ubuntu1: Test CUDA failure all_reduce.cu:50 'invalid argument'
+ .. ubuntu1 pid 5059: Test failure common.cu:724
+ .. ubuntu1 pid 5059: Test failure common.cu:958
+ .. ubuntu1 pid 5059: Test failure all_reduce.cu:574
+ .. ubuntu1 pid 5059: Test failure common.cu:991
+ .. ubuntu1 pid 5059: Test failure common.cu:1870
+ .. ubuntu1 pid 5059: Test failure common.cu:1545

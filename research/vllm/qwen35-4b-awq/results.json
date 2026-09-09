@@ -1,0 +1,57 @@
+{
+  "model": "kumar2235/Qwen3.5-4B-AWQ",
+  "max_model_len": 8192,
+  "prefill": [
+    {
+      "prompt_len": 128,
+      "wall_s": 0.0879,
+      "ttft_s": null,
+      "prefill_tok_s": 1456.3
+    },
+    {
+      "prompt_len": 512,
+      "wall_s": 0.0907,
+      "ttft_s": null,
+      "prefill_tok_s": 5642.8
+    },
+    {
+      "prompt_len": 2048,
+      "wall_s": 0.2987,
+      "ttft_s": null,
+      "prefill_tok_s": 6857.0
+    },
+    {
+      "prompt_len": 4096,
+      "wall_s": 0.6025,
+      "ttft_s": null,
+      "prefill_tok_s": 6798.4
+    },
+    {
+      "prompt_len": 8000,
+      "wall_s": 1.2124,
+      "ttft_s": null,
+      "prefill_tok_s": 6598.4
+    }
+  ],
+  "decode": [
+    {
+      "prompt_len": 128,
+      "out_len": 128,
+      "wall_s": 7.276,
+      "tpot_ms": 56.6,
+      "decode_tok_s": 17.7
+    },
+    {
+      "prompt_len": 128,
+      "out_len": 512,
+      "wall_s": 28.961,
+      "tpot_ms": 56.5,
+      "decode_tok_s": 17.7
+    }
+  ],
+  "sample": {
+    "wall_s": 14.57,
+    "out_len": 256,
+    "text": "\n\n<think>\nThinking Process:\n\n1.  **Analyze the Request:**\n    *   Topic: Machine Learning.\n    *   Constraint: Explain in *one paragraph*.\n    *   Goal: Provide a clear, concise, and accurate definition/explanation.\n\n2.  **Identify Key Concepts of Machine Learning:**\n    *   What is it? A subset of artificial intelligence (AI).\n    *   How does it work? Algorithms learn from data (patterns).\n    *   What is the outcome? Making predictions or decisions without being explicitly programmed for every rule.\n    *   Types (briefly): Supervised, unsupervised, etc. (maybe too detailed for one paragraph, but good to mention \"learning from data\").\n    *   Application: Used in chatbots, image recognition, etc.\n\n3.  **Drafting - Attempt 1 (Mental Outline):**\n    Machine learning is a part of AI where computers learn from data. Instead of following strict rules, the system finds patterns in data to make decisions. For example, if you train it on photos of cats, it can recognize new cats. It's used in many things like recommendation engines.\n\n4.  **Refining - Attempt"
+  }
+}
