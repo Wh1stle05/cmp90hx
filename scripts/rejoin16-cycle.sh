@@ -28,6 +28,39 @@ with open(path, "wb") as f:
     f.write(struct.pack("<II", addr, val))
 PY
 
+# Re-lock the compute selectors BEFORE unloading, while BAR0 is still
+# accessible. After `modprobe -r` the device drops into a low-power state
+# (BAR0 reads back 0xffffffff, every write REJECTED), so the old order
+# (unload first, re-lock after) silently left SS0/SS1 full, the V67 canary
+# saw "already present" and skipped the Booter chain entirely
+# ("(no REJOIN16 lines!)" + PCIe FAIL every cycle). Root trigger was a
+# power-management behavior change after an `apt --fix-broken` pulled in
+# libnvidia-compute-580/535 + regenerated initramfs; the kernel module
+# itself is still 610.43.03. Verified 2026-09-09 on ubuntu1: pre-unload
+# re-lock makes REJOIN16 fire on every cycle.
+relock() {  # re-lock SS0/SS1 to 0 with readback check; 0 on success
+    local try cur0 cur1 reader="${SCRIPT_DIR}/maskread.py"
+    for try in 1 2 3; do
+        "$POKE" "$BDF" wr 0x0082381c 0x0 >/dev/null 2>&1
+        "$POKE" "$BDF" wr 0x00823820 0x0 >/dev/null 2>&1
+        if [[ -f "$reader" ]]; then
+            read -r cur0 cur1 <<<"$(python3 "$reader" "$BDF" 0x0082381c 0x00823820 2>/dev/null)"
+            [[ "$cur0" == "0x00000000" && "$cur1" == "0x00000000" ]] && return 0
+        else
+            return 0  # no reader available; assume writes landed (legacy path)
+        fi
+        sleep 1
+    done
+    return 1
+}
+
+restore_full() {  # best-effort restore of full selectors (compute safety net)
+    "$POKE" "$BDF" wr 0x0082381c 0x88888888 >/dev/null 2>&1 || true
+    "$POKE" "$BDF" wr 0x00823820 0x00000008 >/dev/null 2>&1 || true
+}
+
+relock || { echo "FATAL: cannot re-lock selectors while driver loaded; aborting before unload"; restore_full; exit 1; }
+
 # Unload the whole stack (nvidia_drm/nvidia_modeset may be held by udev).
 modprobe -r nvidia_drm nvidia_modeset nvidia_uvm nvidia_peermem nvidia 2>/dev/null || {
     sleep 2
@@ -35,8 +68,8 @@ modprobe -r nvidia_drm nvidia_modeset nvidia_uvm nvidia_peermem nvidia 2>/dev/nu
 } || { echo "FATAL: cannot unload nvidia stack"; exit 1; }
 
 # Re-lock the compute selectors so the canary path runs on the next load.
-"$POKE" "$BDF" wr 0x0082381c 0x0 >/dev/null
-"$POKE" "$BDF" wr 0x00823820 0x0 >/dev/null
+# (Done above, before unload — see relock(). Writes after unload are
+# REJECTED because BAR0 is inaccessible once the driver is gone.)
 
 dmesg -C 2>/dev/null || true
 

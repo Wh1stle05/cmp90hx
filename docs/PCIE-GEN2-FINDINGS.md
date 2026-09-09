@@ -76,6 +76,18 @@ copyh2d 1.59 -> 3.18 GB/s, copyd2h 1.68 -> 3.35 GB/s   (GPU1, x8)
   `lspci -Dnn | awk '/10de:220d/'`.
 * Warm reboots may or may not keep the masks latched (observed both), so the
   boot service always re-checks and opens only what is missing.
+* 2026-09-09: `rejoin16-cycle.sh` re-lock moved **before** `modprobe -r`
+  (with `maskread.py` readback check + `restore_full` safety net). After an
+  `apt --fix-broken` pulled in `libnvidia-compute-580/535` and regenerated
+  initramfs, the device drops into a low-power state once the driver is
+  unloaded (BAR0 reads `0xffffffff`, every write `REJECTED`), so the old
+  order (unload → re-lock) silently left SS0/SS1 full, V67 logged
+  "already present" and skipped the Booter chain (`(no REJOIN16 lines!)`
+  + PCIe FAIL on every cycle). Pre-unload re-lock makes REJOIN16 fire on
+  every cycle. Side observation: the first Booter write to a fresh mask
+  often reports `NO-EFFECT (polls=1000)` while an identical second write
+  reports `OK (polls=40-54)` — the 6-tries-per-mask loop in
+  `cmp90hx-gen2-minimal.sh` covers this.
 
 ## 4. Board topology
 
