@@ -6,6 +6,10 @@ After=multi-user.target
 [Service]
 Type=oneshot
 ExecStartPre=/bin/rm -f /var/lib/cmpunlocker-rs/rejoin16-next-write.bin
+# Bring the card up on the stock module first, then hand it to the patched one.
+# The patched module cannot be the first nvidia load of a power cycle (see
+# scripts/cmp90hx-gen2-handoff.sh).
+ExecStartPre=/opt/cmp90hx-gen2/cmp90hx-gen2-handoff.sh
 ExecStart=/opt/cmp90hx-gen2/cmp90hx-gen2-minimal.sh
 TimeoutStartSec=900
 RemainAfterExit=yes

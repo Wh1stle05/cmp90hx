@@ -124,12 +124,34 @@ depmod -a "$KREL"
 if ! modprobe --show-depends nvidia 2>/dev/null | grep -q "$UPDATES"; then
     info "WARNING: modprobe does not resolve nvidia to $UPDATES - check $DEPMOD_CONF"
 fi
+
+# 5c. keep udev from auto-loading nvidia at boot.
+# The patched module must NOT be the first nvidia driver load of a power cycle
+# (its V67 chain needs the signature memdesc a plain stock GSP boot leaves
+# behind; loading it first fails RmInitAdapter and wedges the GPU until
+# reboot). The boot service primes the card with the stock module and then
+# hands over - see scripts/cmp90hx-gen2-handoff.sh.
+NOAUTO_CONF="/etc/modprobe.d/cmp90hx-gen2-noauto.conf"
+info "installing $NOAUTO_CONF (no boot-time auto-load)"
+cat > "$NOAUTO_CONF" <<'NOAUTOEOF'
+# The cmp90hx-gen2 boot service loads the driver itself: it primes the GPU with
+# the stock module first, then hands over to the patched module. Auto-loading
+# nvidia here would load the patched module as the first driver load of the
+# power cycle, which fails GSP init and wedges the card (WPR2).
+blacklist nvidia
+blacklist nvidia-uvm
+blacklist nvidia-modeset
+blacklist nvidia-drm
+blacklist nvidia-peermem
+NOAUTOEOF
+chmod 0644 "$NOAUTO_CONF"
 command -v update-initramfs >/dev/null && update-initramfs -u -k "$KREL" || true
 
 # 6. install helper scripts + bar0poke
 info "installing helper scripts to $PREFIX"
 mkdir -p "$PREFIX"
 install -m0755 "$REPO/scripts/cmp90hx-gen2-minimal.sh" "$PREFIX/"
+install -m0755 "$REPO/scripts/cmp90hx-gen2-handoff.sh" "$PREFIX/"
 install -m0755 "$REPO/scripts/rejoin16-cycle.sh" "$PREFIX/"
 install -m0644 "$REPO/scripts/maskread.py" "$PREFIX/"
 install -m0644 "$REPO/tools/bench.cu" "$PREFIX/"

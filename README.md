@@ -102,6 +102,12 @@ sudo ./scripts/uninstall.sh   # 然后重启
 ## 注意
 
 * 绑定驱动 **610.43.03 open**；换驱动版本需 rebase 补丁并重新验证 2 掩码。
+* **冷启动顺序很重要**：补丁模块**不能**是一个电源周期里第一个加载的 nvidia
+  驱动——它的 V67 链要替换 stock GSP boot 留下的 signature memdesc，抢先加载会
+  `RmInitAdapter failed (0x62:0x40:2119)` 并把 GPU 卡在 WPR2（只能重启恢复）。
+  因此 install.sh 会装 `/etc/modprobe.d/cmp90hx-gen2-noauto.conf` 禁止开机
+  自动加载，改由服务 `cmp90hx-gen2-handoff.sh` **先用 stock 模块把卡点起来，
+  再交接给补丁模块**，最后才写掩码。
 * **stock 驱动用 `--dkms` 安装时**，其模块位于 `updates/dkms/`，depmod 会按模块名
   去重并优先选它，导致补丁模块被静默覆盖（脚本报成功、实际没解锁）。
   `install.sh` 会写入 `/etc/depmod.d/cmp90hx-gen2.conf` 强制补丁版优先，

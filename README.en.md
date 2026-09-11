@@ -107,6 +107,14 @@ sudo ./scripts/uninstall.sh   # then reboot
 
 * Bound to driver **610.43.03 open**. A different driver version needs the
   patches rebased and the 2-mask set re-verified.
+* **Cold-boot order matters**: the patched module must NOT be the first nvidia
+  driver load of a power cycle. Its V67 chain replaces the signature memdesc a
+  plain stock GSP boot leaves behind; loading it first fails
+  `RmInitAdapter (0x62:0x40:2119)` and wedges the GPU ("unexpected WPR2 already
+  up") until reboot. `install.sh` therefore installs
+  `/etc/modprobe.d/cmp90hx-gen2-noauto.conf` to suppress boot-time auto-load and
+  lets `cmp90hx-gen2-handoff.sh` bring the card up on the stock module, hand it
+  over to the patched one, and only then run the mask apply.
 * **If the stock driver was installed with `--dkms`**, its modules live in
   `updates/dkms/` and depmod dedups by module name, preferring that path over
   the patched copies — the unlock is then silently lost (install.sh still

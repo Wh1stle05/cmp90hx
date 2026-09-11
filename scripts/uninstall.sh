@@ -17,8 +17,10 @@ systemctl daemon-reload
 if [[ -d "$UPDATES" ]]; then
     rm -rf "$UPDATES"
 fi
-# drop the depmod override so the stock/DKMS modules are used again
+# drop the depmod override so the stock/DKMS modules are used again, and the
+# no-auto-load blacklist so a plain reboot brings nvidia back normally
 rm -f /etc/depmod.d/cmp90hx-gen2.conf
+rm -f /etc/modprobe.d/cmp90hx-gen2-noauto.conf
 depmod -a "$KREL"
 command -v update-initramfs >/dev/null && update-initramfs -u -k "$KREL" || true
 rm -rf "$PREFIX"
