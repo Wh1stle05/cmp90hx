@@ -102,7 +102,28 @@ mkdir -p "$UPDATES"
 for m in nvidia nvidia-uvm nvidia-modeset nvidia-drm nvidia-peermem; do
     [[ -f "$ART/$m.ko" ]] && install -m0644 "$ART/$m.ko" "$UPDATES/"
 done
+
+# 5b. depmod override.
+# When the stock driver is installed with --dkms (the usual way), its modules
+# live in updates/dkms/ and depmod dedups by module name, preferring that path
+# over ours. The result is a *silently unpatched* module: install.sh passes,
+# but neither compute nor PCIe Gen2 is actually unlocked after a reboot.
+# Pin our path explicitly so the patched modules always win.
+DEPMOD_CONF="/etc/depmod.d/cmp90hx-gen2.conf"
+info "installing depmod override $DEPMOD_CONF"
+cat > "$DEPMOD_CONF" <<'DEPMODEOF'
+# Force the patched CMP 90HX unlock modules ahead of the DKMS stock modules.
+override nvidia * updates/cmpunlocker-90hx-stockflow
+override nvidia-uvm * updates/cmpunlocker-90hx-stockflow
+override nvidia-modeset * updates/cmpunlocker-90hx-stockflow
+override nvidia-drm * updates/cmpunlocker-90hx-stockflow
+override nvidia-peermem * updates/cmpunlocker-90hx-stockflow
+DEPMODEOF
+
 depmod -a "$KREL"
+if ! modprobe --show-depends nvidia 2>/dev/null | grep -q "$UPDATES"; then
+    info "WARNING: modprobe does not resolve nvidia to $UPDATES - check $DEPMOD_CONF"
+fi
 command -v update-initramfs >/dev/null && update-initramfs -u -k "$KREL" || true
 
 # 6. install helper scripts + bar0poke

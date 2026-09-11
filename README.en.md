@@ -107,6 +107,12 @@ sudo ./scripts/uninstall.sh   # then reboot
 
 * Bound to driver **610.43.03 open**. A different driver version needs the
   patches rebased and the 2-mask set re-verified.
+* **If the stock driver was installed with `--dkms`**, its modules live in
+  `updates/dkms/` and depmod dedups by module name, preferring that path over
+  the patched copies — the unlock is then silently lost (install.sh still
+  passes). `install.sh` writes `/etc/depmod.d/cmp90hx-gen2.conf` to force the
+  patched path to win, and `uninstall.sh` removes it again. Self-check with
+  `modprobe --show-depends nvidia`.
 * After a **kernel upgrade**, DKMS rebuilds the stock module but not the
   patched one — re-run `install.sh`, otherwise the card falls back to the
   locked stock module (0.72 TFLOPS + Gen1).

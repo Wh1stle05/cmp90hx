@@ -102,6 +102,10 @@ sudo ./scripts/uninstall.sh   # 然后重启
 ## 注意
 
 * 绑定驱动 **610.43.03 open**；换驱动版本需 rebase 补丁并重新验证 2 掩码。
+* **stock 驱动用 `--dkms` 安装时**，其模块位于 `updates/dkms/`，depmod 会按模块名
+  去重并优先选它，导致补丁模块被静默覆盖（脚本报成功、实际没解锁）。
+  `install.sh` 会写入 `/etc/depmod.d/cmp90hx-gen2.conf` 强制补丁版优先，
+  `uninstall.sh` 会一并删除；可用 `modprobe --show-depends nvidia` 自检。
 * **内核升级后**：DKMS 会自动重编 stock 模块，但补丁模块不会——必须重跑
   `install.sh`，否则重启回落到 stock 模块（0.72 TFLOPS + Gen1）。
 * apply 期间会多次重载驱动，别在 GPU 有任务时跑。
