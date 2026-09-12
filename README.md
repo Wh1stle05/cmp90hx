@@ -108,6 +108,20 @@ sudo ./scripts/uninstall.sh   # 然后重启
   因此 install.sh 会装 `/etc/modprobe.d/cmp90hx-gen2-noauto.conf` 禁止开机
   自动加载，改由服务 `cmp90hx-gen2-handoff.sh` **先用 stock 模块把卡点起来，
   再交接给补丁模块**，最后才写掩码。
+* **GPU 负载必须排在解锁服务【之后】启动**：解锁服务要卸载/重载 nvidia 模块，
+  如果有进程占着 `/dev/nvidia*`（ComfyUI 一启动初始化 CUDA 就会），
+  `modprobe -r` 会失败 —— 而 `rejoin16-cycle.sh` 已经先把算力选择器重置为 0，
+  结果是**算力解锁丢失 + 掩码写不进 + PCIe 停在 Gen1**（实测症状：
+  服务日志 `open 0x00823800 FAIL (readback=0xffffff8f)`，dmesg 里只有 2 次
+  `NVRM: loading`，没有第 3 次重载）。
+  正确做法是给 GPU 服务加 drop-in：
+  ```ini
+  [Unit]
+  After=cmp90hx-gen2.service
+  Wants=cmp90hx-gen2.service
+  ```
+  ⚠️ 但本服务的单元里**不能**写 `After=multi-user.target`（与 `WantedBy=multi-user.target`
+  构成顺序环，systemd 会直接删除 GPU 服务的启动任务）。本仓库的单元已移除该行。
 * **stock 驱动用 `--dkms` 安装时**，其模块位于 `updates/dkms/`，depmod 会按模块名
   去重并优先选它，导致补丁模块被静默覆盖（脚本报成功、实际没解锁）。
   `install.sh` 会写入 `/etc/depmod.d/cmp90hx-gen2.conf` 强制补丁版优先，

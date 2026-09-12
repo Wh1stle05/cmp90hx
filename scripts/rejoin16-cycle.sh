@@ -65,7 +65,14 @@ relock || { echo "FATAL: cannot re-lock selectors while driver loaded; aborting 
 modprobe -r nvidia_drm nvidia_modeset nvidia_uvm nvidia_peermem nvidia 2>/dev/null || {
     sleep 2
     modprobe -r nvidia_drm nvidia_modeset nvidia_uvm nvidia_peermem nvidia 2>/dev/null
-} || { echo "FATAL: cannot unload nvidia stack"; exit 1; }
+} || {
+    # 卸载失败(通常是有进程占着 /dev/nvidia*, 例如 ComfyUI 已初始化 CUDA)。
+    # 此时上面的 relock 已经把 SS0/SS1 重置为 0, 若不恢复就会【静默丢失算力解锁】
+    # (实测: 服务读到 masks=0xffffff8f, 掩码写不进, PCIe 停在 Gen1)。
+    echo "FATAL: cannot unload nvidia stack; restoring full selectors"
+    restore_full
+    exit 1
+}
 
 # Re-lock the compute selectors so the canary path runs on the next load.
 # (Done above, before unload — see relock(). Writes after unload are

@@ -1,7 +1,14 @@
 [Unit]
 Description=CMP 90HX PCIe Gen2 unlock (minimal 2-mask, auto BDF) - compute unlock is automatic at module load
-After=multi-user.target
-# If you auto-start a miner / GPU workload, order it After= this unit.
+# 注意: 这里【不能】写 After=multi-user.target。
+# 那样会与 WantedBy=multi-user.target 构成顺序环, 导致任何
+# "After=cmp90hx-gen2.service" 的 GPU 服务被 systemd 删除启动任务
+# (实测: comfyui.service/start deleted to break ordering cycle)。
+# 正确做法: 让 GPU 负载自己声明 After/Wants=cmp90hx-gen2.service。
+#
+# GPU 负载必须先等本服务完成: 本服务要卸载/重载 nvidia 模块,
+# 若有进程占着 /dev/nvidia* (例如 ComfyUI 初始化 CUDA), modprobe -r 会失败,
+# 而 rejoin16-cycle.sh 已先把算力选择器重置为 0 -> 解锁丢失、PCIe 停在 Gen1。
 
 [Service]
 Type=oneshot
