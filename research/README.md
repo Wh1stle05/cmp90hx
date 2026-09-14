@@ -13,6 +13,7 @@
 | `AI-capability-2026-09-14.md` | **单卡 AI 能力总汇**（LLM + 出图） | 27B-2bit 35 tok/s、SDXL 1024² 11s、4K 19s |
 | `llamacpp/` | llama.cpp 跑 Qwen3.8-27B IQ2_XXS（+mmproj），上下文/投机/多模态 | 冷启动 3.7s；pp 840 tok/s、tg 35.5 tok/s；32k 上限 |
 | `comfyui/chisa-lora-sdxl/` | chisa LoRA + SDXL 出图、4K 两条路线、LoRA 训练与强度/轮次对比 | 1024² 11s、批量 11.2s/张、4K 19.4s（两步法） |
+| `AI-capability-video-script.md` | 3 分钟视频脚本大纲（分镜 + 解说词 + 数据卡） | 数据速查见文末总表 |
 | `notes/` | 上下文上限、ngram 投机解码、分层带宽（RAM/SSD/HDD）、Flash-Next 量化与 MTP | 复制类任务投机 2.45–2.71× |
 | `p2p/` | 双卡 P2P / NCCL / 拷贝带宽（torch 手写 + nccl-tests） | TP 不可行（all_reduce ~2GB/s），PP 更合适 |
 | `vllm/` | vLLM 0.28 跑 Qwen3.5-4B-AWQ prefill/decode/显存 | decode 159 tok/s（CUDA Graph），prefill 7.3k tok/s |

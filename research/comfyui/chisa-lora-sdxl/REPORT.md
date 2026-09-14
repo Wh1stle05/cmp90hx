@@ -43,6 +43,15 @@
 
 对比图：`previews/compare_hires_4k.jpg`、`previews/preview_direct_4k.jpg`、`previews/preview_hires_4k.jpg`
 
+### 2.1 基模 vs +LoRA（视频用：1024×1024 / 24 步 / 同种子 1234567890，各 3 次）
+
+| 配置 | 耗时（3 次） | 平均 | 增量 | 显存 | 功耗 |
+|---|---|---|---|---|---|
+| 基模（Illustrious-XL-v2.0） | 8.16 / 9.36 / 9.36 s | **8.96 s** | — | 9668 MiB | 250–251 W |
+| 基模 + chisa LoRA 1.3 | 10.94 / 10.93 / 10.96 s | **10.95 s** | **+1.98 s（+22%）** | 9668 MiB | 250 W |
+
+采集脚本：`scripts/video_bench.py`；两张同种子对比图：`images/t2i_1024_no_lora_*.jpg`、`images/t2i_1024_chisa_lora_*.jpg`
+
 ## 3. LoRA 效果验证
 
 | 对比 | 图 | 结论 |
