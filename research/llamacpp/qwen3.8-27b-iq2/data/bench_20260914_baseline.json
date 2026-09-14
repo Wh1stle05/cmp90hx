@@ -1,0 +1,430 @@
+{
+  "label": "baseline",
+  "base_url": "http://127.0.0.1:8080/v1",
+  "model": "qwen3.8-27b",
+  "has_tokenize": true,
+  "reps": 3,
+  "time": "2026-09-14 11:44:16",
+  "prefill": [
+    {
+      "target": 128,
+      "prompt_n": 127,
+      "ttft_s": 0.3971,
+      "ttft_wall_s": 0.6581,
+      "prompt_ms": 397.147,
+      "prefill_tps": 319.8,
+      "cache_n": 0,
+      "samples": [
+        {
+          "target": 128,
+          "prompt_n": 127,
+          "ttft_s": 0.4018,
+          "ttft_wall_s": 0.4084,
+          "prompt_ms": 401.79,
+          "prefill_tps": 316.1,
+          "cache_n": 0
+        },
+        {
+          "target": 128,
+          "prompt_n": 127,
+          "ttft_s": 0.3972,
+          "ttft_wall_s": 0.6556,
+          "prompt_ms": 397.158,
+          "prefill_tps": 319.8,
+          "cache_n": 0
+        },
+        {
+          "target": 128,
+          "prompt_n": 127,
+          "ttft_s": 0.3971,
+          "ttft_wall_s": 0.6581,
+          "prompt_ms": 397.147,
+          "prefill_tps": 319.8,
+          "cache_n": 0
+        }
+      ]
+    },
+    {
+      "target": 512,
+      "prompt_n": 511,
+      "ttft_s": 0.8781,
+      "ttft_wall_s": 1.2884,
+      "prompt_ms": 878.133,
+      "prefill_tps": 581.9,
+      "cache_n": 0,
+      "samples": [
+        {
+          "target": 512,
+          "prompt_n": 511,
+          "ttft_s": 0.8878,
+          "ttft_wall_s": 1.1521,
+          "prompt_ms": 887.782,
+          "prefill_tps": 575.6,
+          "cache_n": 0
+        },
+        {
+          "target": 512,
+          "prompt_n": 511,
+          "ttft_s": 0.8827,
+          "ttft_wall_s": 1.2339,
+          "prompt_ms": 882.714,
+          "prefill_tps": 578.9,
+          "cache_n": 0
+        },
+        {
+          "target": 512,
+          "prompt_n": 511,
+          "ttft_s": 0.8781,
+          "ttft_wall_s": 1.2884,
+          "prompt_ms": 878.133,
+          "prefill_tps": 581.9,
+          "cache_n": 0
+        }
+      ]
+    },
+    {
+      "target": 2048,
+      "prompt_n": 2047,
+      "ttft_s": 2.812,
+      "ttft_wall_s": 3.2621,
+      "prompt_ms": 2812.012,
+      "prefill_tps": 727.9,
+      "cache_n": 0,
+      "samples": [
+        {
+          "target": 2048,
+          "prompt_n": 2047,
+          "ttft_s": 2.8162,
+          "ttft_wall_s": 3.1803,
+          "prompt_ms": 2816.217,
+          "prefill_tps": 726.9,
+          "cache_n": 0
+        },
+        {
+          "target": 2048,
+          "prompt_n": 2047,
+          "ttft_s": 2.812,
+          "ttft_wall_s": 3.2621,
+          "prompt_ms": 2812.012,
+          "prefill_tps": 727.9,
+          "cache_n": 0
+        },
+        {
+          "target": 2048,
+          "prompt_n": 2047,
+          "ttft_s": 2.8185,
+          "ttft_wall_s": 3.2101,
+          "prompt_ms": 2818.497,
+          "prefill_tps": 726.3,
+          "cache_n": 0
+        }
+      ]
+    },
+    {
+      "target": 4096,
+      "prompt_n": 4095,
+      "ttft_s": 5.4262,
+      "ttft_wall_s": 5.8711,
+      "prompt_ms": 5426.216,
+      "prefill_tps": 754.7,
+      "cache_n": 0,
+      "samples": [
+        {
+          "target": 4096,
+          "prompt_n": 4095,
+          "ttft_s": 5.442,
+          "ttft_wall_s": 5.9052,
+          "prompt_ms": 5442.049,
+          "prefill_tps": 752.5,
+          "cache_n": 0
+        },
+        {
+          "target": 4096,
+          "prompt_n": 4095,
+          "ttft_s": 5.4473,
+          "ttft_wall_s": 5.8922,
+          "prompt_ms": 5447.267,
+          "prefill_tps": 751.8,
+          "cache_n": 0
+        },
+        {
+          "target": 4096,
+          "prompt_n": 4095,
+          "ttft_s": 5.4262,
+          "ttft_wall_s": 5.8711,
+          "prompt_ms": 5426.216,
+          "prefill_tps": 754.7,
+          "cache_n": 0
+        }
+      ]
+    },
+    {
+      "target": 8000,
+      "prompt_n": 7999,
+      "ttft_s": 10.6234,
+      "ttft_wall_s": 11.0927,
+      "prompt_ms": 10623.434,
+      "prefill_tps": 753.0,
+      "cache_n": 0,
+      "samples": [
+        {
+          "target": 8000,
+          "prompt_n": 7999,
+          "ttft_s": 10.6234,
+          "ttft_wall_s": 11.0927,
+          "prompt_ms": 10623.434,
+          "prefill_tps": 753.0,
+          "cache_n": 0
+        },
+        {
+          "target": 8000,
+          "prompt_n": 7999,
+          "ttft_s": 10.6256,
+          "ttft_wall_s": 11.1734,
+          "prompt_ms": 10625.618,
+          "prefill_tps": 752.8,
+          "cache_n": 0
+        },
+        {
+          "target": 8000,
+          "prompt_n": 7999,
+          "ttft_s": 10.6369,
+          "ttft_wall_s": 11.1859,
+          "prompt_ms": 10636.877,
+          "prefill_tps": 752.0,
+          "cache_n": 0
+        }
+      ]
+    }
+  ],
+  "decode": [
+    {
+      "out": 128,
+      "prompt_n": 169,
+      "prompt_target": 128,
+      "gen_n": 128,
+      "wall_s": 4.035,
+      "tpot_ms": 28.26,
+      "gen_tps_tpot": 35.4,
+      "gen_tps_engine": 35.2,
+      "cache_n": 0,
+      "draft_n": null,
+      "draft_accepted": null,
+      "samples": [
+        {
+          "out": 128,
+          "prompt_n": 169,
+          "prompt_target": 128,
+          "gen_n": 128,
+          "wall_s": 4.035,
+          "tpot_ms": 28.26,
+          "gen_tps_tpot": 35.4,
+          "gen_tps_engine": 35.2,
+          "cache_n": 0,
+          "draft_n": null,
+          "draft_accepted": null
+        },
+        {
+          "out": 128,
+          "prompt_n": 169,
+          "prompt_target": 128,
+          "gen_n": 128,
+          "wall_s": 4.309,
+          "tpot_ms": 30.4,
+          "gen_tps_tpot": 32.9,
+          "gen_tps_engine": 35.2,
+          "cache_n": 0,
+          "draft_n": null,
+          "draft_accepted": null
+        },
+        {
+          "out": 128,
+          "prompt_n": 168,
+          "prompt_target": 128,
+          "gen_n": 128,
+          "wall_s": 4.315,
+          "tpot_ms": 30.45,
+          "gen_tps_tpot": 32.8,
+          "gen_tps_engine": 35.2,
+          "cache_n": 0,
+          "draft_n": null,
+          "draft_accepted": null
+        }
+      ]
+    },
+    {
+      "out": 512,
+      "prompt_n": 169,
+      "prompt_target": 128,
+      "gen_n": 512,
+      "wall_s": 15.104,
+      "tpot_ms": 28.69,
+      "gen_tps_tpot": 34.9,
+      "gen_tps_engine": 35.4,
+      "cache_n": 0,
+      "draft_n": null,
+      "draft_accepted": null,
+      "samples": [
+        {
+          "out": 512,
+          "prompt_n": 169,
+          "prompt_target": 128,
+          "gen_n": 512,
+          "wall_s": 15.104,
+          "tpot_ms": 28.69,
+          "gen_tps_tpot": 34.9,
+          "gen_tps_engine": 35.4,
+          "cache_n": 0,
+          "draft_n": null,
+          "draft_accepted": null
+        },
+        {
+          "out": 512,
+          "prompt_n": 169,
+          "prompt_target": 128,
+          "gen_n": 512,
+          "wall_s": 15.186,
+          "tpot_ms": 28.84,
+          "gen_tps_tpot": 34.7,
+          "gen_tps_engine": 35.3,
+          "cache_n": 0,
+          "draft_n": null,
+          "draft_accepted": null
+        },
+        {
+          "out": 512,
+          "prompt_n": 168,
+          "prompt_target": 128,
+          "gen_n": 512,
+          "wall_s": 15.192,
+          "tpot_ms": 28.86,
+          "gen_tps_tpot": 34.7,
+          "gen_tps_engine": 35.3,
+          "cache_n": 0,
+          "draft_n": null,
+          "draft_accepted": null
+        }
+      ]
+    }
+  ],
+  "spec": [
+    {
+      "task": "逐字复述",
+      "wall_s": 7.93,
+      "gen_n": 256,
+      "gen_tps": 35.26,
+      "draft_n": 0,
+      "draft_accepted": 0,
+      "accept_rate": null,
+      "samples": [
+        {
+          "task": "逐字复述",
+          "wall_s": 7.93,
+          "gen_n": 256,
+          "gen_tps": 35.26,
+          "draft_n": 0,
+          "draft_accepted": 0,
+          "accept_rate": null
+        },
+        {
+          "task": "逐字复述",
+          "wall_s": 7.94,
+          "gen_n": 256,
+          "gen_tps": 35.24,
+          "draft_n": 0,
+          "draft_accepted": 0,
+          "accept_rate": null
+        },
+        {
+          "task": "逐字复述",
+          "wall_s": 7.94,
+          "gen_n": 256,
+          "gen_tps": 35.24,
+          "draft_n": 0,
+          "draft_accepted": 0,
+          "accept_rate": null
+        }
+      ]
+    },
+    {
+      "task": "代码改写",
+      "wall_s": 8.04,
+      "gen_n": 256,
+      "gen_tps": 35.23,
+      "draft_n": 0,
+      "draft_accepted": 0,
+      "accept_rate": null,
+      "samples": [
+        {
+          "task": "代码改写",
+          "wall_s": 8.04,
+          "gen_n": 256,
+          "gen_tps": 35.23,
+          "draft_n": 0,
+          "draft_accepted": 0,
+          "accept_rate": null
+        },
+        {
+          "task": "代码改写",
+          "wall_s": 7.92,
+          "gen_n": 256,
+          "gen_tps": 35.22,
+          "draft_n": 0,
+          "draft_accepted": 0,
+          "accept_rate": null
+        },
+        {
+          "task": "代码改写",
+          "wall_s": 7.67,
+          "gen_n": 256,
+          "gen_tps": 35.21,
+          "draft_n": 0,
+          "draft_accepted": 0,
+          "accept_rate": null
+        }
+      ]
+    },
+    {
+      "task": "开放问答",
+      "wall_s": 7.6,
+      "gen_n": 256,
+      "gen_tps": 35.23,
+      "draft_n": 0,
+      "draft_accepted": 0,
+      "accept_rate": null,
+      "samples": [
+        {
+          "task": "开放问答",
+          "wall_s": 7.6,
+          "gen_n": 256,
+          "gen_tps": 35.23,
+          "draft_n": 0,
+          "draft_accepted": 0,
+          "accept_rate": null
+        },
+        {
+          "task": "开放问答",
+          "wall_s": 7.89,
+          "gen_n": 256,
+          "gen_tps": 35.23,
+          "draft_n": 0,
+          "draft_accepted": 0,
+          "accept_rate": null
+        },
+        {
+          "task": "开放问答",
+          "wall_s": 7.6,
+          "gen_n": 256,
+          "gen_tps": 35.22,
+          "draft_n": 0,
+          "draft_accepted": 0,
+          "accept_rate": null
+        }
+      ]
+    }
+  ],
+  "gpu": {
+    "peak_vram_mib": 9216,
+    "max_power_w": 250.1
+  }
+}

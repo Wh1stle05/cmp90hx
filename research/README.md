@@ -11,7 +11,7 @@
 | 子目录 | 内容 | 关键结论 |
 |---|---|---|
 | `AI-capability-2026-09-14.md` | **单卡 AI 能力总汇**（LLM + 出图） | 27B-2bit 35 tok/s、SDXL 1024² 11s、4K 19s |
-| `llamacpp/` | llama.cpp 跑 Qwen3.8-27B IQ2_XXS（+mmproj），上下文/投机/多模态 | 冷启动 3.7s；pp 840 tok/s、tg 35.5 tok/s；32k 上限 |
+| `llamacpp/` | llama.cpp 跑 Qwen3.8-27B IQ2_XXS（+mmproj）：prefill/decode/投机 A/B、上下文、多模态 | prefill 750 tok/s@8k；decode 35 tok/s；投机 2.6–7.2× |
 | `comfyui/chisa-lora-sdxl/` | chisa LoRA + SDXL 出图、4K 两条路线、LoRA 训练与强度/轮次对比 | 1024² 11s、批量 11.2s/张、4K 19.4s（两步法） |
 | `hw-comparison-3070-3080.md` | **CMP 90HX vs RTX 3070 / 3070Ti / 3080** 参数与 AI 能力对比 | 90HX ≈ 3080 的显存 + 3070 的算力，无显示/无 NVENC |
 | `AI-capability-video-script.md` | 3 分钟视频脚本大纲（分镜 + 解说词 + 数据卡） | 数据速查见文末总表 |
