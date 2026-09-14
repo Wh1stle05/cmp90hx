@@ -1,0 +1,54 @@
+{
+  "date": "20260914_083507",
+  "results": [
+    {
+      "scenario": "img2img_1mp",
+      "desc": "img2img (16.jpg→1MP) · denoise 0.81 · 28步",
+      "status": "success",
+      "wall_s": 13.03,
+      "comfy_reported_s": 12.24,
+      "peak_vram_mib": 9670,
+      "its_samples": [],
+      "images": [
+        "/data3/dual-90hx-research/results/images/img2img_1mp_img2img_00001_.png"
+      ],
+      "error": null
+    },
+    {
+      "scenario": "lora_w0.6",
+      "desc": "1024² LoRA 强度 0.6 · 24步",
+      "status": "success",
+      "wall_s": 11.03,
+      "comfy_reported_s": 10.51,
+      "peak_vram_mib": 8678,
+      "its_samples": [],
+      "images": [
+        "/data3/dual-90hx-research/results/images/lora_w0.6_lora_w06_00001_.png"
+      ],
+      "error": null
+    },
+    {
+      "scenario": "lora_w1.0",
+      "desc": "1024² LoRA 强度 1.0 · 24步",
+      "status": "success",
+      "wall_s": 11.03,
+      "comfy_reported_s": 10.47,
+      "peak_vram_mib": 9158,
+      "its_samples": [],
+      "images": [
+        "/data3/dual-90hx-research/results/images/lora_w1.0_lora_w10_00001_.png"
+      ],
+      "error": null
+    },
+    {
+      "scenario": "lora_epoch2",
+      "desc": "1024² LoRA 第2轮权重 (000002) · 24步",
+      "error": "{\"error\": {\"type\": \"prompt_outputs_failed_validation\", \"message\": \"Prompt outputs failed validation\", \"details\": \"\", \"extra_info\": {}}, \"node_errors\": {\"2\": {\"errors\": [{\"type\": \"value_not_in_list\", \"message\": \"Value not in list\", \"details\": \"lora_name: 'chisa_illustrious_v1-000002.safetensors' not in ['chisa_illustrious_v1.safetensors']\", \"extra_info\": {\"input_name\": \"lora_name\", \"input_config\": [[\"chisa_illustrious_v1.safetensors\"], {\"tooltip\": \"The name of the LoRA.\"}], \"received_value\": \"chi"
+    },
+    {
+      "scenario": "lora_epoch6",
+      "desc": "1024² LoRA 第6轮权重 (000006) · 24步",
+      "error": "{\"error\": {\"type\": \"prompt_outputs_failed_validation\", \"message\": \"Prompt outputs failed validation\", \"details\": \"\", \"extra_info\": {}}, \"node_errors\": {\"2\": {\"errors\": [{\"type\": \"value_not_in_list\", \"message\": \"Value not in list\", \"details\": \"lora_name: 'chisa_illustrious_v1-000006.safetensors' not in ['chisa_illustrious_v1.safetensors']\", \"extra_info\": {\"input_name\": \"lora_name\", \"input_config\": [[\"chisa_illustrious_v1.safetensors\"], {\"tooltip\": \"The name of the LoRA.\"}], \"received_value\": \"chi"
+    }
+  ]
+}

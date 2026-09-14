@@ -1,0 +1,42 @@
+{
+  "date": "20260914_084045",
+  "model": "/data3/gguf/Qwen3.8-27B-UD-IQ2_XXS.gguf",
+  "binary": "/home/a3165/llama.cpp/build/bin",
+  "vram_idle_mib": 0,
+  "llama_bench": {
+    "f16": "| model                          |       size |     params | backend    | ngl |            test |                  t/s |\n| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |\n| qwen35 27B IQ2_XXS - 2.0625 bpw |   6.76 GiB |    26.90 B | CUDA       |  99 |           pp512 |        796.03 ± 0.00 |\n| qwen35 27B IQ2_XXS - 2.0625 bpw |   6.76 GiB |    26.90 B | CUDA       |  99 |          pp4096 |        841.69 ± 0.00 |\n| qwen35 27B IQ2_XXS - 2.0625 bpw |   6.76 GiB |    26.90 B | CUDA       |  99 |            tg64 |         35.75 ± 0.00 |\n\nbuild: 718f7b4 (1)",
+    "q8_0": "| model                          |       size |     params | backend    | ngl | type_k | type_v |            test |                  t/s |\n| ------------------------------ | ---------: | ---------: | ---------- | --: | -----: | -----: | --------------: | -------------------: |\n| qwen35 27B IQ2_XXS - 2.0625 bpw |   6.76 GiB |    26.90 B | CUDA       |  99 |   q8_0 |   q8_0 |           pp512 |        792.77 ± 0.00 |\n| qwen35 27B IQ2_XXS - 2.0625 bpw |   6.76 GiB |    26.90 B | CUDA       |  99 |   q8_0 |   q8_0 |          pp4096 |        836.48 ± 0.00 |\n| qwen35 27B IQ2_XXS - 2.0625 bpw |   6.76 GiB |    26.90 B | CUDA       |  99 |   q8_0 |   q8_0 |            tg64 |         35.33 ± 0.00 |\n\nbuild: 718f7b4 (1)"
+  },
+  "cold_start_s": 3.69,
+  "vram_loaded_mib": 9012,
+  "ttft": [
+    {
+      "input_tokens": 112,
+      "ttft_s": 0.4,
+      "total_s": 0.86,
+      "prefill_tps": 279.9,
+      "decode_tps": 33.3
+    },
+    {
+      "input_tokens": 2511,
+      "ttft_s": 3.29,
+      "total_s": 3.94,
+      "prefill_tps": 763.8,
+      "decode_tps": 33.0
+    },
+    {
+      "input_tokens": 30011,
+      "ttft_s": 43.26,
+      "total_s": 44.29,
+      "prefill_tps": 693.7,
+      "decode_tps": 26.7
+    }
+  ],
+  "short_qa": {
+    "wall_s": 1.16,
+    "answer": "391",
+    "prompt_tokens": 25,
+    "completion_tokens": 4,
+    "decode_tps": 27.8
+  }
+}

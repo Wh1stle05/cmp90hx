@@ -1,0 +1,120 @@
+{
+  "date": "20260914_083047",
+  "gpu": "NVIDIA CMP 90HX 10GB (single card)",
+  "comfyui_version": "0.35.0",
+  "results": [
+    {
+      "scenario": "warmup_512",
+      "desc": "预热(加载底模)",
+      "status": "success",
+      "wall_s": 17.04,
+      "comfy_reported_s": 16.19,
+      "peak_vram_mib": 7012,
+      "its_samples": [],
+      "images": [
+        "/data3/dual-90hx-research/results/images/warmup_512_warmup_00001_.png"
+      ],
+      "error": null
+    },
+    {
+      "scenario": "t2i_1024_chisa_lora",
+      "desc": "1024² txt2img · chisa LoRA 1.3 · 24步",
+      "status": "success",
+      "wall_s": 11.17,
+      "comfy_reported_s": 10.87,
+      "peak_vram_mib": 9668,
+      "its_samples": [],
+      "images": [
+        "/data3/dual-90hx-research/results/images/t2i_1024_chisa_lora_t2i_lora_00001_.png"
+      ],
+      "error": null
+    },
+    {
+      "scenario": "t2i_1024_no_lora",
+      "desc": "1024² txt2img · 无 LoRA（同种子）· 24步",
+      "status": "success",
+      "wall_s": 10.02,
+      "comfy_reported_s": 9.09,
+      "peak_vram_mib": 9668,
+      "its_samples": [],
+      "images": [
+        "/data3/dual-90hx-research/results/images/t2i_1024_no_lora_t2i_nolora_00001_.png"
+      ],
+      "error": null
+    },
+    {
+      "scenario": "t2i_1024_animagine",
+      "desc": "1024² txt2img · animagine-xl-4.0 · 24步",
+      "status": "success",
+      "wall_s": 21.33,
+      "comfy_reported_s": 21.01,
+      "peak_vram_mib": 8132,
+      "its_samples": [],
+      "images": [
+        "/data3/dual-90hx-research/results/images/t2i_1024_animagine_t2i_anima_00001_.png"
+      ],
+      "error": null
+    },
+    {
+      "scenario": "batch4_1024_chisa",
+      "desc": "1024² ×4 批量 · chisa LoRA · 24步",
+      "status": "success",
+      "wall_s": 45.11,
+      "comfy_reported_s": 44.74,
+      "peak_vram_mib": 8646,
+      "its_samples": [],
+      "images": [
+        "/data3/dual-90hx-research/results/images/batch4_1024_chisa_batch4_00001_.png",
+        "/data3/dual-90hx-research/results/images/batch4_1024_chisa_batch4_00002_.png",
+        "/data3/dual-90hx-research/results/images/batch4_1024_chisa_batch4_00003_.png",
+        "/data3/dual-90hx-research/results/images/batch4_1024_chisa_batch4_00004_.png"
+      ],
+      "error": null
+    },
+    {
+      "scenario": "img2img_1mp",
+      "desc": "img2img (16.jpg→1MP) · denoise 0.81 · 28步",
+      "error": "{\"error\": {\"type\": \"prompt_outputs_failed_validation\", \"message\": \"Prompt outputs failed validation\", \"details\": \"\", \"extra_info\": {}}, \"node_errors\": {\"6\": {\"errors\": [{\"type\": \"required_input_missing\", \"message\": \"Required input is missing\", \"details\": \"resolution_steps\", \"extra_info\": {\"input_name\": \"resolution_steps\"}}], \"dependent_outputs\": [\"10\"], \"class_type\": \"ImageScaleToTotalPixels\"}}}"
+    },
+    {
+      "scenario": "inpaint_28",
+      "desc": "inpaint (test_src.jpg) · 28步",
+      "status": "success",
+      "wall_s": 12.03,
+      "comfy_reported_s": 11.31,
+      "peak_vram_mib": 9478,
+      "its_samples": [],
+      "images": [
+        "/data3/dual-90hx-research/results/images/inpaint_28_inpaint_00001_.png"
+      ],
+      "error": null
+    },
+    {
+      "scenario": "hires_4k",
+      "desc": "1344×768 → 4x-UltraSharp → 3840×2160 · 30步",
+      "status": "success",
+      "wall_s": 20.04,
+      "comfy_reported_s": 19.38,
+      "peak_vram_mib": 9670,
+      "its_samples": [],
+      "images": [
+        "/data3/dual-90hx-research/results/images/hires_4k_hires_src_00001_.png",
+        "/data3/dual-90hx-research/results/images/hires_4k_hires_4k_00001_.png"
+      ],
+      "error": null
+    },
+    {
+      "scenario": "direct_4k",
+      "desc": "3840×2160 直接生成 · 24步",
+      "status": "success",
+      "wall_s": 107.47,
+      "comfy_reported_s": 107.14,
+      "peak_vram_mib": 9862,
+      "its_samples": [],
+      "images": [
+        "/data3/dual-90hx-research/results/images/direct_4k_direct4k_00001_.png"
+      ],
+      "error": null
+    }
+  ]
+}

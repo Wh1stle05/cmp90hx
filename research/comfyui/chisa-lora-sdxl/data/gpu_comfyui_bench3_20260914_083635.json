@@ -1,0 +1,31 @@
+{
+  "date": "20260914_083635",
+  "results": [
+    {
+      "scenario": "lora_epoch2",
+      "desc": "1024² LoRA 训练第2轮权重 (epoch 2/12) · 24步",
+      "status": "success",
+      "wall_s": 11.03,
+      "comfy_reported_s": 10.59,
+      "peak_vram_mib": 8678,
+      "its_samples": [],
+      "images": [
+        "/data3/dual-90hx-research/results/images/lora_epoch2_lora_e2_00001_.png"
+      ],
+      "error": null
+    },
+    {
+      "scenario": "lora_epoch6",
+      "desc": "1024² LoRA 训练第6轮权重 (epoch 6/12) · 24步",
+      "status": "success",
+      "wall_s": 11.03,
+      "comfy_reported_s": 10.45,
+      "peak_vram_mib": 9158,
+      "its_samples": [],
+      "images": [
+        "/data3/dual-90hx-research/results/images/lora_epoch6_lora_e6_00001_.png"
+      ],
+      "error": null
+    }
+  ]
+}

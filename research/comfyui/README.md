@@ -1,4 +1,10 @@
-# ComfyUI 0.35 部署 + SDXL 文生图首测（CMP 90HX 单卡）
+# ComfyUI 0.35 部署 + SDXL 文生图
+
+> **2026-09-14 更新**：新增自训角色 LoRA 出图与完整基准 →
+> [`chisa-lora-sdxl/REPORT.md`](chisa-lora-sdxl/REPORT.md)（1024²/24 步 10.9 s、批量 4 张 11.2 s/张、
+> 4K 两步法 19.4 s、LoRA 训练 56 分钟）。
+> ⚠️ 下方 09-09 首测记录的「1024²/28 步 = 6.0 s」在 09-14 复核中为 **9.25–10.6 s**
+> （GPU 满速 250 W / SM 1830 MHz，无降频），差异来自中间的 venv 重建/实现变化，**以新报告为准**。
 
 日期：2026-09-09　机器：ubuntu1　GPU：CMP 90HX 10GB（GPU1，Gen2 x8）
 
@@ -47,6 +53,8 @@ POST `http://127.0.0.1:8188/prompt` JSON workflow → 轮询
 
 ## 待办
 
-- [ ] animagine-xl-4.0 同条件对比
-- [ ] 512² / 多步数 / 不同调度器基准
-- [ ] 压测脚本接入（pstress.sh 已验证 GPU1 30min 249W 稳定）
+- [x] animagine-xl-4.0 同条件对比（09-14：1024²/24 步 21.0 s）→ 见 `chisa-lora-sdxl/REPORT.md`
+- [x] 多步数 / 分辨率 / 4K / 批量基准（09-14 完成）
+- [x] 角色 LoRA 出图与训练数据（09-14 完成）
+- [ ] 不同调度器（dpmpp_2m 等）对比
+- [ ] 压测脚本接入（pstress.sh 已验证 30min 249W 稳定）

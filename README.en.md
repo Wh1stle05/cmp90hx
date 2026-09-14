@@ -23,11 +23,28 @@ scripts/ systemd/ tools/ patches/ masks/   unlock toolchain (compute + PCIe Gen2
 docs/                                      unlock internals, benchmarks, Gen2 notes
 research/                                  single-GPU measurements: AI inference,
                                            text-to-image, stress test
-    p2p/        dual-GPU P2P/NCCL history (TP impractical, see README)
+    AI-capability-2026-09-14.md  full AI capability summary (LLM + image gen)
+    llamacpp/   Qwen3.8-27B (2-bit GGUF): 35 tok/s decode, 32k ctx, multimodal
+    comfyui/    SDXL text-to-image + self-trained chisa LoRA, 4K pipelines
     vllm/       vLLM 0.28 + Qwen3.5-4B-AWQ prefill/decode report
-    comfyui/    ComfyUI 0.35 + SDXL text-to-image deploy & first run
+    p2p/        dual-GPU P2P/NCCL history (TP impractical, see README)
+    notes/      context limits, ngram spec decoding, tiered bandwidth, Flash-Next quants
     pstress.sh  stress-test script
 ```
+
+## AI workloads after unlock (single 10 GB card, 2026-09-14)
+
+| Workload | Measured | Details |
+|---|---|---|
+| **Qwen3.8-27B (2-bit GGUF, llama.cpp)** | cold start **3.7 s**, decode **35.5 tok/s**, prefill **840 tok/s**, 32k ctx, 9.0 GB VRAM | [research/llamacpp](research/llamacpp/qwen3.8-27b-iq2/REPORT.md) |
+| Vision (image Q&A) | accurate captions; 768x1024 image ~= 787 tokens | same |
+| ngram-mod speculative decoding | **2.45-2.71x** on copy/rewrite tasks (zero VRAM cost) | [research/notes](research/notes/ngram_mod_bench.md) |
+| **SDXL text-to-image** | 1024^2 / 24 steps **10.9 s**; batch of 4 **11.2 s/img** | [research/comfyui](research/comfyui/chisa-lora-sdxl/REPORT.md) |
+| **4K output** | direct 4K **107 s**; two-step (1344x768 + 4x-UltraSharp) **19.4 s** | same |
+| Self-trained character LoRA | 16 images / 960 steps / **56 min** | same |
+
+> GPU held **SM 1830 MHz / 250 W (power cap) / <60 C** throughout, no throttling.
+> Limit: on 10 GB, the 27B LLM (9.0 GB) and SDXL (9.7 GB) cannot be resident at the same time.
 
 ## How it works
 

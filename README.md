@@ -16,15 +16,32 @@ VBIOS `94.02.74.00.01`/`.05`）在 Linux + NVIDIA **open** 内核模块
 
 不刷 VBIOS、不写 OTP/熔丝——只有运行时寄存器写入 + 打补丁的内核模块。
 
+## 解锁后的 AI 实测（单卡 10GB，2026-09-14）
+
+| 能力 | 实测结果 | 详见 |
+|---|---|---|
+| **Qwen3.8-27B（2bit GGUF）** | 冷启动 **3.7 s**、生成 **35.5 tok/s**、预填充 **840 tok/s**、上下文 **32k**、显存 9.0 GB | [research/llamacpp](research/llamacpp/qwen3.8-27b-iq2/REPORT.md) |
+| 多模态（看图） | 图片描述准确，768×1024 图 ≈ 787 token | 同上 |
+| ngram-mod 投机解码 | 复制/改写类任务 **2.45–2.71×**（零显存） | [research/notes](research/notes/ngram_mod_bench.md) |
+| **SDXL 出图** | 1024² / 24 步 **10.9 s**，批量 4 张 **11.2 s/张** | [research/comfyui](research/comfyui/chisa-lora-sdxl/REPORT.md) |
+| **4K 出图** | 直接 4K **107 s**；两步法（1344×768 + 4x-UltraSharp）**19.4 s** | 同上 |
+| 自训角色 LoRA | 16 张图 / 960 步 / **56 分钟**，角色一致性明显 | 同上 |
+
+> 出图全程 GPU 稳定 **SM 1830 MHz / 250 W 顶墙 / <60 °C**，无降频。
+> 限制：10GB 显存下 27B-LLM（9.0 GB）与 SDXL（9.7 GB）**不能同时常驻**；上下文 32k 是显存边界。
+
 ## 仓库结构
 
 ```
 ├── scripts/ systemd/ tools/ patches/ masks/   解锁工具链（算力 + PCIe Gen2）
 ├── docs/                                      解锁原理、基准、Gen2 找坑记录
 └── research/                                  单卡实测：AI 推理 / 文生图 / 压测
-    ├── p2p/        双卡 P2P/NCCL 历史数据（TP 不可行，见 README）
+    ├── AI-capability-2026-09-14.md  单卡 AI 能力总汇（LLM + 出图，含视频用结论）
+    ├── llamacpp/   llama.cpp 跑 Qwen3.8-27B(2bit)：35 tok/s 生成 / 32k 上下文 / 多模态
+    ├── comfyui/    ComfyUI 0.35 + SDXL：部署首测 + chisa LoRA 出图与 4K 实测
     ├── vllm/       vLLM 0.28 + Qwen3.5-4B-AWQ prefill/decode 报告
-    ├── comfyui/    ComfyUI 0.35 + SDXL 文生图部署与首测
+    ├── p2p/        双卡 P2P/NCCL 历史数据（TP 不可行，见 README）
+    ├── notes/      专题：上下文上限、ngram 投机解码、分层带宽、Flash-Next 量化/MTP
     └── pstress.sh  压力测试脚本
 ```
 
