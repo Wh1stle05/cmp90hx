@@ -12,6 +12,7 @@ with the NVIDIA **open** kernel modules `610.43.03`:
 | Mixed precision | — | TF32 40.6 / FP16 77.7 / BF16 60.5 TFLOPS, INT8 45.2 TOPS |
 | **PCIe** | Gen1 x16 / x8, 3.08 / 1.59 GB/s H2D | **Gen2 x16 / x8, 6.29 / 3.18 GB/s H2D** |
 | Memory | 10 GB GDDR6X, 9501 MHz | unchanged |
+| **L2 cache** | 2.5 MiB (half of a 320-bit GA102's nominal 5 MiB) | ❌ not unlockable (GSP/VBIOS-determined, see [docs/L2-FINDINGS.md](docs/L2-FINDINGS.md)) |
 
 No VBIOS flashing, no OTP/fuse writes — runtime register writes and a patched
 kernel module only.
@@ -20,7 +21,7 @@ kernel module only.
 
 ```
 scripts/ systemd/ tools/ patches/ masks/   unlock toolchain (compute + PCIe Gen2)
-docs/                                      unlock internals, benchmarks, Gen2 notes
+docs/                                      unlock internals, benchmarks, Gen2 notes, L2 findings
 research/                                  single-GPU measurements: AI inference,
                                            text-to-image, stress test
     AI-capability-2026-09-14.md  full AI capability summary (LLM + image gen)
@@ -142,6 +143,11 @@ sudo ./scripts/uninstall.sh   # then reboot
   patched one — re-run `install.sh`, otherwise the card falls back to the
   locked stock module (0.72 TFLOPS + Gen1).
 * Do not run the apply while the GPUs are busy (it reloads the driver).
+* **L2 cache is a dead end**: measured **2.5 MiB** (half of a 320-bit GA102's nominal
+  5 MiB) and determined by the GSP-RM firmware from the VSI (VBIOS/fuses). Host/driver
+  writes are rejected by the PLM, privileged V67 writes get rewritten by the GSP, and the
+  FBPA registers are hard-locked. Not a mask-gated soft lock. See
+  [docs/L2-FINDINGS.md](docs/L2-FINDINGS.md).
 * Out of scope: CMP 170HX (GA100), 50HX, 30HX/40HX/70HX, VBIOS `.07`
   (different unlock path), proprietary module flavour.
 

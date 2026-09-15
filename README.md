@@ -13,6 +13,7 @@ VBIOS `94.02.74.00.01`/`.05`）在 Linux + NVIDIA **open** 内核模块
 | 混合精度 | — | TF32 40.6 / FP16 77.7 / BF16 60.5 TFLOPS，INT8 45.2 TOPS |
 | **PCIe** | Gen1 x16 / x8，H2D 3.08 / 1.59 GB/s | **Gen2 x16 / x8，H2D 6.29 / 3.18 GB/s** |
 | 显存 | 10GB GDDR6X，9501MHz | 不变 |
+| **L2 缓存** | 2.5 MiB（320-bit GA102 标称 5 MiB，实为一半） | ❌ 不可解锁（GSP/VBIOS 决定，见 [docs/L2-FINDINGS.md](docs/L2-FINDINGS.md)） |
 
 不刷 VBIOS、不写 OTP/熔丝——只有运行时寄存器写入 + 打补丁的内核模块。
 
@@ -34,7 +35,7 @@ VBIOS `94.02.74.00.01`/`.05`）在 Linux + NVIDIA **open** 内核模块
 
 ```
 ├── scripts/ systemd/ tools/ patches/ masks/   解锁工具链（算力 + PCIe Gen2）
-├── docs/                                      解锁原理、基准、Gen2 找坑记录
+├── docs/                                      解锁原理、基准、Gen2 找坑记录、L2 排查结论
 └── research/                                  单卡实测：AI 推理 / 文生图 / 压测
     ├── AI-capability-2026-09-14.md  单卡 AI 能力总汇（LLM + 出图，含视频用结论）
     ├── llamacpp/   llama.cpp 跑 Qwen3.8-27B(2bit)：35 tok/s 生成 / 32k 上下文 / 多模态
@@ -146,6 +147,9 @@ sudo ./scripts/uninstall.sh   # 然后重启
 * **内核升级后**：DKMS 会自动重编 stock 模块，但补丁模块不会——必须重跑
   `install.sh`，否则重启回落到 stock 模块（0.72 TFLOPS + Gen1）。
 * apply 期间会多次重载驱动，别在 GPU 有任务时跑。
+* **L2 缓存已排查，不可解锁**：实测 **2.5 MiB**（320-bit GA102 标称 5 MiB，正好一半），
+  由 GSP-RM 固件从 VSI（VBIOS/熔丝）决定。host/驱动写被 PLM 拒、特权 V67 写会被 GSP
+  重写、FBPA 组硬锁——不是掩码型软锁。详见 [docs/L2-FINDINGS.md](docs/L2-FINDINGS.md)。
 * 不在范围内：CMP 170HX（GA100）、50HX、30HX/40HX/70HX、VBIOS `.07`
   （另一套解锁路径）、专有模块 flavor。
 
